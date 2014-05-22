@@ -4,8 +4,9 @@ compilerProject
 project Of compiler course
 
 Input File:
-  main.c
-  grammar.txt
+
+  [main.c]
+  [grammar.txt]
 
 Output File:
   token.txt
@@ -21,15 +22,15 @@ Follow this step:
   Lexcial Analysis
     grammar => NFA => DFA
     input main.c => token list
-    
+
   Syntax Analysis
-  
+
   Semantic Analysis
-  
+
   IR Generation
-  
+
   IR Optimization ( no need to do)
-  
+
   Code Generation
-  
+
   Optimiztion ( no need to do)
