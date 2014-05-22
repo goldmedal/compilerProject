@@ -3,10 +3,9 @@ compilerProject
 
 project Of compiler course
 
-Input File:
-
-  [main.c]
-  [grammar.txt]
+- Input File:
+  `main.c`
+  `grammar.txt`
 
 Output File:
   token.txt
