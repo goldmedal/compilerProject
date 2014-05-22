@@ -2,6 +2,7 @@ compilerProject
 ===============
 
 project Of compiler course
+========
 
 - Input File：
   `main.c`
@@ -16,20 +17,21 @@ project Of compiler course
   `quadruples.txt`
   `code.tm`
 
-Follow this step:
+step
+========
 
-  Lexcial Analysis
+- Lexcial Analysis
     grammar => NFA => DFA
     input main.c => token list
 
-  Syntax Analysis
+- Syntax Analysis
 
-  Semantic Analysis
+- Semantic Analysis
 
-  IR Generation
+- IR Generation
 
-  IR Optimization ( no need to do)
+- IR Optimization ( no need to do)
 
-  Code Generation
+- Code Generation
 
-  Optimiztion ( no need to do)
+- Optimiztion ( no need to do)
