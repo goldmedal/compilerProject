@@ -7,7 +7,7 @@ project Of compiler course
   `main.c`
   `grammar.txt`
 
-Output File：
+- Output File：
   `token.txt`
   `set.txt`
   `LLtable.txt`
