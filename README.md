@@ -3,18 +3,18 @@ compilerProject
 
 project Of compiler course
 
-- Input File:
+- Input File：
   `main.c`
   `grammar.txt`
 
-Output File:
-  token.txt
-  set.txt
-  LLtable.txt
-  tree.txt
-  symbol.txt
-  quadruples.txt
-  code.tm
+Output File：
+  `token.txt`
+  `set.txt`
+  `LLtable.txt`
+  `tree.txt`
+  `symbol.txt`
+  `quadruples.txt`
+  `code.tm`
 
 Follow this step:
 
