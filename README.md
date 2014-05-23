@@ -19,9 +19,8 @@ compilerProject
 ##step
 
 - Lexcial Analysis
-  *  `grammar` => `NFA` => `DFA`
-  *  `input main.c` => `token list`
-
+  *  `grammar` -> `NFA` -> `DFA`
+  *  `input main.c` -> `token list`
 - Syntax Analysis
 
 - Semantic Analysis
