@@ -1,8 +1,7 @@
 compilerProject
-===============
-
-project Of compiler course
 ========
+
+#project Of compiler course
 
 - Input File：
   `main.c`
@@ -17,8 +16,7 @@ project Of compiler course
   `quadruples.txt`
   `code.tm`
 
-step
-========
+#step
 
 - Lexcial Analysis
     grammar => NFA => DFA
