@@ -1,0 +1,62 @@
+Line  1:
+         <Keyword>    : int
+         <Identifier> : x
+         <Special>    : ;
+Line  2:
+         <Keyword>    : int
+         <Identifier> : main
+         <Special>    : (
+         <Special>    : )
+         <Special>    : {
+Line  3:
+         <Keyword>    : int
+         <Identifier> : a
+         <Special>    : ;
+Line  4:
+         <Keyword>    : int
+         <Identifier> : b
+         <Special>    : ;
+Line  5:
+         <Identifier> : a
+         <Operators>  : =
+         <Number>     : 0
+         <Special>    : ;
+Line  6:
+         <Identifier> : b
+         <Operators>  : =
+         <Number>     : 1
+         <Special>    : ;
+Line  7:
+         <Identifier> : x
+         <Operators>  : =
+         <Identifier> : a
+         <Operators>  : +
+         <Identifier> : b
+         <Special>    : ;
+Line  8:
+         <Special>    : }
+Line  9:
+Line 10:
+         <Keyword>    : int
+         <Identifier> : y
+         <Special>    : ;
+Line 11:
+Line 12:
+         <Keyword>    : int
+         <Identifier> : doub
+         <Special>    : (
+         <Keyword>    : int
+         <Identifier> : c
+         <Special>    : ,
+         <Keyword>    : int
+         <Identifier> : d
+         <Special>    : )
+         <Special>    : {
+Line 13:
+         <Keyword>    : return
+         <Identifier> : c
+         <Operators>  : *
+         <Identifier> : d
+         <Special>    : ;
+Line 14:
+         <Special>    : }
