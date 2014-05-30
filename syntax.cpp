@@ -1,7 +1,8 @@
-#include"iostream"
-#include"fstream"
-#include"stack"
-#include"utility"
+#include <iostream>
+#include <fstream>
+#include <stack>
+#include <utility>
+#include <map>
 
 using namespace std;
 
@@ -21,22 +22,24 @@ void initial()
 
 }
 
-void Read_G()
+void read_G()
 {
-	G_ifile >> number; //user should give the number of formula first
-	for(int i = 1; i <= number; i++)
+	cout << number << endl;
+		
+	char temp = '0';
+	char TTT[100];
+	int i = 0, j = 0;
+	//G_ifile >> temp;
+	while(!G_ifile.eof())
 	{
-		char temp;
-		int j = 0;
-		G_ifile >> temp;
-		while(temp != '$')
-		{
-			tempofinput[temp] = true;
-			G[i][j++] = temp;
-			G_ifile >> temp;
-		}
-		length[i] = j;
+		tempofinput[temp] = true;
+		G[i][j++] = temp;
+		//G_ifile >> temp;
+		G_ifile.getline(TTT, 100);
+		cout << TTT << endl;
 	}
+	length[i] = j;
+	
 	G[0][0] = 'S';
 	G[0][1] = G[1][0];
 	length[0] = 2;
@@ -55,5 +58,9 @@ int main()
 {
 	initial();
 
-	G_ifile.open("d:\\grammar.txt");
+	G_ifile.open("./inputFile/grammar_orig.txt", ifstream::in);
+	//cout << G_ifile;
+	read_G();
+
+	G_ifile.close();
 }
