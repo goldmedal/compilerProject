@@ -8,6 +8,8 @@ using namespace std;
 
 ifstream G_ifile;
 
+multimap<string, string> grammar;
+
 char G[20][20]; //use a matrix to store grammar G
 int length[20]; //length use to store each formula's length
 int number = 0;
@@ -22,21 +24,31 @@ void initial()
 
 }
 
+string trimEnd(string &str)
+{
+	const string &delim =" \t" ;
+	string r=str.erase(str.find_last_not_of(delim)+1);
+	return r.erase(0,r.find_first_not_of(delim));
+}
+
 void read_G()
 {
 	cout << number << endl;
 		
 	char temp = '0';
-	char TTT[100];
+	string TTT;
 	int i = 0, j = 0;
 	//G_ifile >> temp;
 	while(!G_ifile.eof())
 	{
 		tempofinput[temp] = true;
 		G[i][j++] = temp;
+		
+		G_ifile.get(temp);
+		G_ifile.seekg(-1, ios::cur);
 		//G_ifile >> temp;
-		G_ifile.getline(TTT, 100);
-		cout << TTT << endl;
+		getline(G_ifile, TTT);
+		cout << trimEnd(TTT) << endl;
 	}
 	length[i] = j;
 	
