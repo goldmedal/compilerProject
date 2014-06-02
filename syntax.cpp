@@ -25,9 +25,9 @@ void initial()
 
 }
 
-string trimEnd(string &str)
+string trimEnd(string str)
 {
-	const string &delim =" \t" ;
+	string delim = " " ;
 	string r=str.erase(str.find_last_not_of(delim)+1);
 	return r.erase(0,r.find_first_not_of(delim));
 }
@@ -68,7 +68,7 @@ void read_G()
 		//G_ifile.seekg(1, ios::cur);
 	}
 	
-	map_overview(grammar);
+	//map_overview(grammar);
 	/*length[i] = j;
 	
 	G[0][0] = 'S';
@@ -94,33 +94,35 @@ bool find_nullable(string str)
 		return false;
 
 	bool l_res = false, r_res = true;
-	map<string, string>::iterator beg, end;  
+	multimap<string, string>::iterator beg, end;  
 	string token;
 	
 	beg = grammar.lower_bound(str);
-	end = grammar.upper_bound(str);
+	//end = grammar.upper_bound(str);
 	//end++;
 	//beg++;
 
-//	cout << beg -> second <<endl;
-//	cout << end -> second << endl;
+	cout << trimEnd(beg -> first).length() << endl;
+	cout << beg -> second << endl;
+	cout << trimEnd(str).length() << endl;
+	//int count = grammar.count("BinOp");  
+	//cout << count << endl;
 
-	int count = grammar.count(str);
-	cout <<count <<endl;
-
-	while(0) 
+	while(beg->first == str) 
 	{cout << "1" << endl;
-		istringstream iss(beg++ -> second);
+		istringstream iss(beg -> second);
 		//string token;
 	
 		r_res = true;
 		while(getline(iss, token, ' '))
-		{cout << "2" << endl;
+		{//cout << "2" << endl;
 			//cout << token << endl;
 			r_res &= find_nullable(token);
 		}
 
 		l_res |= r_res;
+		
+		beg++;
 	}
 
 	return l_res;
@@ -134,7 +136,7 @@ int main()
 	//cout << G_ifile;
 	read_G();
 
-	cout << find_nullable("BinOp") << endl;
+	cout << find_nullable("ExprList") << endl;
 
 	G_ifile.close();
 }
