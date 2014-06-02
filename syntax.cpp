@@ -3,6 +3,7 @@
 #include <stack>
 #include <utility>
 #include <map>
+#include <sstream>
 
 using namespace std;
 
@@ -19,8 +20,6 @@ int size_vn = 0;
 char str_vt[150]; //put all vt into it
 int size_vt = 0;
 
-multimap<string, string>::iterator iter, beg, end;  
-
 void initial()
 {
 
@@ -35,7 +34,7 @@ string trimEnd(string &str)
 
 void map_overview(multimap<string, string> G)
 {
-	for (iter = G.begin(); iter != G.end(); iter++)  
+	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)  
 	{
 		cout << iter->first << endl; 
 		cout << iter->second << endl; 
@@ -84,9 +83,37 @@ void read_G()
 			str_vn[size_vn++] = i;*/
 }
 
-void find_nullable(multimap<string, string> G)
+bool find_nullable(string str)
 {
+	if(str == "epsilon")
+		return true;
 	
+	if(!(str[0] >= 65 && str[0] <= 90))
+		return false;
+
+	bool l_res = false, r_res = true;
+	multimap<string, string>::iterator beg, end;  
+	string token;
+	
+	beg = grammar.lower_bound(str);
+	end = grammar.upper_bound(str);
+
+	while(beg != end) 
+	{
+		istringstream iss(beg++ -> second);
+		//string token;
+	
+		r_res = true;
+		while(getline(iss, token, ' '))
+		{
+			//cout << token << endl;
+			r_res &= find_nullable(token);
+		}
+
+		l_res |= r_res;
+	}
+
+	return l_res;
 }
 int main()
 {
