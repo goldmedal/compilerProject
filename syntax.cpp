@@ -94,7 +94,7 @@ bool find_nullable(string str)
 		return false;
 
 	bool l_res = false, r_res = true;
-	multimap<string, string>::iterator beg, end;  
+	map<string, string>::iterator beg, end;  
 	string token;
 	
 	beg = grammar.lower_bound(str);
