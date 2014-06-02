@@ -19,6 +19,8 @@ int size_vn = 0;
 char str_vt[150]; //put all vt into it
 int size_vt = 0;
 
+multimap<string, string>::iterator iter, beg, end;  
+
 void initial()
 {
 
@@ -31,14 +33,22 @@ string trimEnd(string &str)
 	return r.erase(0,r.find_first_not_of(delim));
 }
 
+void map_overview(multimap<string, string> G)
+{
+	for (iter = G.begin(); iter != G.end(); iter++)  
+	{
+		cout << iter->first << endl; 
+		cout << iter->second << endl; 
+	}
+}
+
 void read_G()
 {
-	cout << number << endl;
-		
 	char temp = '0';
 	string l_grammar, r_grammar;
 	int i = 0, j = 0;
 	//G_ifile >> temp;
+	
 	while(!G_ifile.eof())
 	{
 		G_ifile.get(temp);
@@ -48,14 +58,17 @@ void read_G()
 		{	
 			//G_ifile >> temp;
 			getline(G_ifile, l_grammar);
+			//cout << l_grammar << endl;
 		}
 		else
 		{
 			getline(G_ifile, r_grammar);
-			grammar.insert(pair<string, string>(l_grammar, r_grammar));  
+			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));  
 		}
 	}
-	length[i] = j;
+	
+	map_overview(grammar);
+	/*length[i] = j;
 	
 	G[0][0] = 'S';
 	G[0][1] = G[1][0];
@@ -68,9 +81,13 @@ void read_G()
 			str_vt[size_vt++] = i;
 	for(int i = 65; i < 91; i++)
 		if(tempofinput[i])
-			str_vn[size_vn++] = i;
+			str_vn[size_vn++] = i;*/
 }
 
+void find_nullable(multimap<string, string> G)
+{
+	
+}
 int main()
 {
 	initial();
