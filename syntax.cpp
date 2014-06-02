@@ -42,7 +42,7 @@ void map_overview(multimap<string, string> G)
 }
 
 void read_G()
-{
+{	
 	char temp = '0';
 	string l_grammar, r_grammar;
 	int i = 0, j = 0;
@@ -64,9 +64,10 @@ void read_G()
 			getline(G_ifile, r_grammar);
 			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));  
 		}
+		//G_ifile.seekg(1, ios::cur);
 	}
 	
-	map_overview(grammar);
+	//map_overview(grammar);
 	/*length[i] = j;
 	
 	G[0][0] = 'S';
@@ -99,13 +100,13 @@ bool find_nullable(string str)
 	end = grammar.upper_bound(str);
 
 	while(beg != end) 
-	{
+	{cout << "1" << endl;
 		istringstream iss(beg++ -> second);
 		//string token;
 	
 		r_res = true;
 		while(getline(iss, token, ' '))
-		{
+		{cout << "2" << endl;
 			//cout << token << endl;
 			r_res &= find_nullable(token);
 		}
@@ -115,6 +116,7 @@ bool find_nullable(string str)
 
 	return l_res;
 }
+
 int main()
 {
 	initial();
@@ -122,6 +124,8 @@ int main()
 	G_ifile.open("./inputFile/grammar_orig.txt", ifstream::in);
 	//cout << G_ifile;
 	read_G();
+
+	cout << find_nullable("ExprList") << endl;
 
 	G_ifile.close();
 }
