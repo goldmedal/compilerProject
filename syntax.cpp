@@ -41,14 +41,15 @@ void read_G()
 	//G_ifile >> temp;
 	while(!G_ifile.eof())
 	{
-		tempofinput[temp] = true;
-		G[i][j++] = temp;
-		
 		G_ifile.get(temp);
 		G_ifile.seekg(-1, ios::cur);
-		//G_ifile >> temp;
-		getline(G_ifile, TTT);
+		
+		if(temp != ' ')
+		{	
+			//G_ifile >> temp;
+			getline(G_ifile, TTT);
 		cout << trimEnd(TTT) << endl;
+		}
 	}
 	length[i] = j;
 	
