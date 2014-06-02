@@ -36,7 +36,7 @@ void read_G()
 	cout << number << endl;
 		
 	char temp = '0';
-	string TTT;
+	string l_grammar, r_grammar;
 	int i = 0, j = 0;
 	//G_ifile >> temp;
 	while(!G_ifile.eof())
@@ -47,8 +47,12 @@ void read_G()
 		if(temp != ' ')
 		{	
 			//G_ifile >> temp;
-			getline(G_ifile, TTT);
-		cout << trimEnd(TTT) << endl;
+			getline(G_ifile, l_grammar);
+		}
+		else
+		{
+			getline(G_ifile, r_grammar);
+			grammar.insert(pair<string, string>(l_grammar, r_grammar));  
 		}
 	}
 	length[i] = j;
