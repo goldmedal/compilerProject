@@ -37,6 +37,7 @@ void map_overview(multimap<string, string> G)
 	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)  
 	{
 		cout << iter->first << endl; 
+		cout << " -> " ;
 		cout << iter->second << endl; 
 	}
 }
@@ -48,9 +49,9 @@ void read_G()
 	int i = 0, j = 0;
 	//G_ifile >> temp;
 	
-	while(!G_ifile.eof())
+	while(G_ifile.get(temp))
 	{
-		G_ifile.get(temp);
+		//G_ifile.get(temp);
 		G_ifile.seekg(-1, ios::cur);
 		
 		if(temp != ' ')
@@ -67,7 +68,7 @@ void read_G()
 		//G_ifile.seekg(1, ios::cur);
 	}
 	
-	//map_overview(grammar);
+	map_overview(grammar);
 	/*length[i] = j;
 	
 	G[0][0] = 'S';
@@ -89,7 +90,7 @@ bool find_nullable(string str)
 	if(str == "epsilon")
 		return true;
 	
-	if(!(str[0] >= 65 && str[0] <= 90))
+	if((str.at(0) <= 65) || (str.at(0) >= 90))
 		return false;
 
 	bool l_res = false, r_res = true;
@@ -98,8 +99,16 @@ bool find_nullable(string str)
 	
 	beg = grammar.lower_bound(str);
 	end = grammar.upper_bound(str);
+	//end++;
+	//beg++;
 
-	while(beg != end) 
+//	cout << beg -> second <<endl;
+//	cout << end -> second << endl;
+
+	int count = grammar.count(str);
+	cout <<count <<endl;
+
+	while(0) 
 	{cout << "1" << endl;
 		istringstream iss(beg++ -> second);
 		//string token;
@@ -125,7 +134,7 @@ int main()
 	//cout << G_ifile;
 	read_G();
 
-	cout << find_nullable("ExprList") << endl;
+	cout << find_nullable("BinOp") << endl;
 
 	G_ifile.close();
 }
