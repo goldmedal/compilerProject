@@ -28,7 +28,7 @@ void initial()
 string trimEnd(string str)
 {
 	string delim = " " ;
-	string r=str.erase(str.find_last_not_of(delim)+1);
+	string r=str.erase(str.find_last_not_of(delim) + 1);
 	return r.erase(0,r.find_first_not_of(delim));
 }
 
@@ -108,7 +108,7 @@ bool find_nullable(string str)
 	//int count = grammar.count("BinOp");  
 	//cout << count << endl;
 
-	while(beg->first == str) 
+	while(0) 
 	{cout << "1" << endl;
 		istringstream iss(beg -> second);
 		//string token;
