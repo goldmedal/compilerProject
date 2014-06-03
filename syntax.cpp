@@ -28,34 +28,34 @@ void initial()
 string trimEnd(string str)
 {
 	string delim = " " ;
-	string r=str.erase(str.find_last_not_of(delim) + 1);
-	return r.erase(0,r.find_first_not_of(delim));
+	string r = str.erase(str.find_last_not_of(delim) + 0);
+	return r.erase(0, r.find_first_not_of(delim));
 }
 
 void map_overview(multimap<string, string> G)
 {
-	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)  
+	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)
 	{
-		cout << iter->first << endl; 
+		cout << iter->first << endl;
 		cout << " -> " ;
-		cout << iter->second << endl; 
+		cout << iter->second << endl;
 	}
 }
 
 void read_G()
-{	
+{
 	char temp = '0';
 	string l_grammar, r_grammar;
 	int i = 0, j = 0;
 	//G_ifile >> temp;
-	
+
 	while(G_ifile.get(temp))
 	{
 		//G_ifile.get(temp);
 		G_ifile.seekg(-1, ios::cur);
-		
+
 		if(temp != ' ')
-		{	
+		{
 			//G_ifile >> temp;
 			getline(G_ifile, l_grammar);
 			//cout << l_grammar << endl;
@@ -63,14 +63,17 @@ void read_G()
 		else
 		{
 			getline(G_ifile, r_grammar);
-			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));  
+			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));
+			//cout << trimEnd(l_grammar) << endl;
+			//cout << " || " ;
+			//cout << trimEnd(l_grammar).length() <<endl;
 		}
 		//G_ifile.seekg(1, ios::cur);
 	}
-	
+
 	//map_overview(grammar);
 	/*length[i] = j;
-	
+
 	G[0][0] = 'S';
 	G[0][1] = G[1][0];
 	length[0] = 2;
@@ -86,33 +89,34 @@ void read_G()
 }
 
 bool find_nullable(string str)
-{
+{//cout <<str<<endl;
 	if(str == "epsilon")
 		return true;
-	
-	if((str.at(0) <= 65) || (str.at(0) >= 90))
+
+	if((str.at(0) < 65) || (str.at(0) > 90))
 		return false;
 
 	bool l_res = false, r_res = true;
-	multimap<string, string>::iterator beg, end;  
+	multimap<string, string>::iterator beg, end;
 	string token;
-	
+
 	beg = grammar.lower_bound(str);
 	//end = grammar.upper_bound(str);
 	//end++;
 	//beg++;
 
-	cout << trimEnd(beg -> first).length() << endl;
-	cout << beg -> second << endl;
-	cout << trimEnd(str).length() << endl;
-	//int count = grammar.count("BinOp");  
+	//cout << (beg -> first).length() << endl;
+	//cout << beg++ -> second << endl;
+	//cout << beg++ -> second << endl;
+	//cout << (str).length() << endl;
+	//int count = grammar.count("BinOp");
 	//cout << count << endl;
 
-	while(0) 
-	{cout << "1" << endl;
+	while(beg -> first == str)
+	{//cout << "1" << endl;
 		istringstream iss(beg -> second);
-		//string token;
-	
+		string token;
+
 		r_res = true;
 		while(getline(iss, token, ' '))
 		{//cout << "2" << endl;
@@ -121,7 +125,7 @@ bool find_nullable(string str)
 		}
 
 		l_res |= r_res;
-		
+
 		beg++;
 	}
 
@@ -136,7 +140,7 @@ int main()
 	//cout << G_ifile;
 	read_G();
 
-	cout << find_nullable("ExprList") << endl;
+	cout << find_nullable("BinOp") << endl;
 
 	G_ifile.close();
 }
