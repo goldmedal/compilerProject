@@ -10,6 +10,7 @@ using namespace std;
 ifstream G_ifile;
 
 multimap<string, string> grammar;
+map<string, bool> nullable;
 
 char G[20][20]; //use a matrix to store grammar G
 int length[20]; //length use to store each formula's length
@@ -59,6 +60,8 @@ void read_G()
 			//G_ifile >> temp;
 			getline(G_ifile, l_grammar);
 			//cout << l_grammar << endl;
+
+			nullable.insert(pair<string, bool>(trimEnd(l_grammar), false));
 		}
 		else
 		{
