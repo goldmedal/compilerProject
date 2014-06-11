@@ -201,7 +201,7 @@ void find_nullable()
 			if (find -> second != r_res) // continue
 			{
 				check = true;
-				find -> second == r_res
+				find -> second = r_res;
 			}
 		}
 	}
