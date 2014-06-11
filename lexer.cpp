@@ -6,32 +6,45 @@
 #include<string>
 using namespace std;
 
-int lexer(fstream &fin);
+typedef struct Token {
+
+	int line;
+	string category;
+	string symbol;
+
+}TOKEN;
+
+typedef vector<TOKEN> TOKENLIST;
+
+TOKENLIST lexer(fstream &fin);
 string divide_token(string token);
+void output_token_list(TOKENLIST);
+TOKEN set_token(int line, string category, string symbol);
 
 int main(int argc, char* argv[]){
 
 	char* fileName = argv[1];
 	fstream fin;
 	fin.open(fileName, ios::in);
+	TOKENLIST tokenList;
 
-	lexer(fin);
+	tokenList = lexer(fin);
+	output_token_list(tokenList);
 	fin.close();
 
 	return 0;
 
 }
 
-int lexer(fstream &fin){
+TOKENLIST lexer(fstream &fin){
 
 	int start, line=1;
 	char buffer[100];
-	fstream fout;
+	TOKENLIST backTokenList;
+
 	string token;
-	string front("<");
 	string category;
 
-	fout.open("token.txt", ios::out);
 
 	while(fin.getline(buffer, sizeof(buffer), '\n')){
 	
@@ -39,19 +52,15 @@ int lexer(fstream &fin){
 		int i = 0;
 		start = 0;
 
-		fout << "Line" << right << setw(3) << line << ":" << endl;
 
 		while(bufferString[i] != '\0'){
 
 			if(bufferString[i] == ' ' || bufferString[i] == '	'){	
 				token = bufferString.substr(start, i-start);
-//				cout << token << endl;
 				if(!token.empty()){
 					category = divide_token(token);
 					if(!category.empty()){
-						category = front + category;
-						category.append(">");
-						fout << "         " << left << setw(13) << category << ": " << token << endl;
+						backTokenList.insert(backTokenList.end(), set_token(line, category, token));
 					}
 				}
 				token.clear();	
@@ -67,15 +76,13 @@ int lexer(fstream &fin){
 		if(!token.empty()){
 			category = divide_token(token);
 			if(!category.empty()){
-				category = front + category;
-				category.append(">");
-				fout << "         " << left << setw(13) << category << ": " << token << endl;
+				backTokenList.insert(backTokenList.end(), set_token(line, category, token));
 			}
 		}
 		token.clear();
 		line++;
 	}
-	fout.close();
+	return backTokenList;
 }
 
 string divide_token(string token){
@@ -130,4 +137,39 @@ string divide_token(string token){
 	
 	return category;
 
+}
+
+TOKEN set_token(int line, string category, string symbol){
+
+	TOKEN tmpToken;
+
+	tmpToken.symbol = symbol;
+	tmpToken.category = category;
+	tmpToken.line = line;
+	
+	return tmpToken;
+
+}
+
+void output_token_list(TOKENLIST tokenList){
+
+	fstream fout;
+	fout.open("token.txt", ios::out);
+	int i = 0;
+	TOKEN nextToken;
+
+	while(i < tokenList.size()){
+
+		if(i == 0 || ( tokenList[i-1].line != tokenList[i].line )){
+			fout << "Line" << right << setw(3) << tokenList[i].line << ":" << endl;
+		}
+		string category("<");
+		category = category + tokenList[i].category + ">";
+		fout << "         " << left << setw(13) << category << ": " << tokenList[i].symbol << endl;
+
+		i++;
+	}
+
+	fout.close();
+	
 }
