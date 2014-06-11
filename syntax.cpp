@@ -75,23 +75,10 @@ void read_G()
 	}
 
 	//map_overview(grammar);
-	/*length[i] = j;
 
-	G[0][0] = 'S';
-	G[0][1] = G[1][0];
-	length[0] = 2;
-	for(int i = 0; i < 64; i++)
-		if(tempofinput[i])
-			str_vt[size_vt++] = i;
-	for(int i = 91; i < 128; i++)
-		if(tempofinput[i])
-			str_vt[size_vt++] = i;
-	for(int i = 65; i < 91; i++)
-		if(tempofinput[i])
-			str_vn[size_vn++] = i;*/
 }
 
-bool find_nullable(string str)
+/*bool find_nullable(string str)
 {//cout <<str<<endl;
 	if(str == "epsilon")
 		return true;
@@ -134,6 +121,46 @@ bool find_nullable(string str)
 
 	return l_res;
 }
+*/
+
+void find_nullable()
+{
+	map<string, bool>::iterator iter, beg, end, find;
+	multimap<string, string>::iterator Mbeg, Mend;
+	string str, token;;
+
+	for (iter = nullable.begin(); iter != nullable.end(); iter++)  
+	{
+			//cout << iter->first << " " << iter->second << endl;
+		str = iter -> first;
+		Mbeg = grammar.lower_bound(str);
+
+		while(Mbeg -> first == str)
+		{//cout << str << endl;
+			if(Mbeg -> second == "epsilon")
+			{
+				find = nullable.find(str);
+				find -> second = true;
+			}
+
+			if (++Mbeg == grammar.end())
+				break;
+
+			//Mbeg++;
+		}
+	}
+	
+	bool check = true;
+
+	while(check)
+	{
+		for (iter = nullable.begin(); iter != nullable.end(); iter++) 
+		{ 
+			//cout << iter->first << " " << iter->second << endl;
+			
+		}
+	}
+}
 
 int main()
 {
@@ -143,7 +170,7 @@ int main()
 	//cout << G_ifile;
 	read_G();
 
-	cout << find_nullable("BinOp") << endl;
+	find_nullable() ;
 
 	G_ifile.close();
 }
