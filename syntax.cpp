@@ -59,9 +59,9 @@ void multimap_overview(multimap<string, string> G)
 	}
 }
 
-void map_overview(multimap<string, bool> G)
+void map_overview(map<string, bool> G)
 {
-	for (multimap<string, bool>::iterator iter = G.begin(); iter != G.end(); iter++)
+	for (map<string, bool>::iterator iter = G.begin(); iter != G.end(); iter++)
 	{
 		cout << iter->first << endl;
 		cout << " -> " ;
@@ -154,7 +154,7 @@ void find_nullable()
 {
 	map<string, bool>::iterator iter, beg, end, find;
 	multimap<string, string>::iterator Mbeg, Mend;
-	string str, token;;
+	string str, token;
 
 	for (iter = nullable.begin(); iter != nullable.end(); iter++)  
 	{
