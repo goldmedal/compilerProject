@@ -3,22 +3,18 @@
 #include <stack>
 #include <utility>
 #include <map>
+#include <set>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
 ifstream G_ifile;
 
 multimap<string, string> grammar;
-
-char G[20][20]; //use a matrix to store grammar G
-int length[20]; //length use to store each formula's length
-int number = 0;
-bool tempofinput[150]; //buffer of input
-char str_vn[20]; //put all vn into it
-int size_vn = 0;
-char str_vt[150]; //put all vt into it
-int size_vt = 0;
+map<string, bool> nullable;
+map<string, set<string> > first;
+map<string, set<string> > follow;
 
 void initial()
 {
@@ -28,91 +24,113 @@ void initial()
 string trimEnd(string str)
 {
 	string delim = " " ;
-	string r=str.erase(str.find_last_not_of(delim) + 1);
-	return r.erase(0,r.find_first_not_of(delim));
+	string r = str.erase(str.find_last_not_of(delim) + 0);
+	return r.erase(0, r.find_first_not_of(delim));
 }
 
-void map_overview(multimap<string, string> G)
+bool is_nullable(string str)
 {
-	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)  
+	if (str == "epsilon")
+		return true;
+	else if ((str.at(0) < 65) || (str.at(0) > 90))
+		return false;
+	else 
 	{
-		cout << iter->first << endl; 
-		cout << " -> " ;
-		cout << iter->second << endl; 
+		map<string, bool>::iterator iter;
+
+		iter = nullable.find(str);
+
+		return iter -> second;
 	}
 }
 
+void multimap_overview(multimap<string, string> G)
+{
+	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)
+	{
+		cout << iter->first << endl;
+		cout << " -> " ;
+		cout << iter->second << endl;
+	}
+}
+
+void map_overview(map<string, bool> G)
+{
+	for (map<string, bool>::iterator iter = G.begin(); iter != G.end(); iter++)
+	{
+		cout << iter->first << endl;
+		cout << " -> " ;
+		cout << iter->second << endl;
+	}
+}
+
+
 void read_G()
-{	
+{
 	char temp = '0';
 	string l_grammar, r_grammar;
 	int i = 0, j = 0;
 	//G_ifile >> temp;
-	
+
 	while(G_ifile.get(temp))
 	{
 		//G_ifile.get(temp);
 		G_ifile.seekg(-1, ios::cur);
-		
+
 		if(temp != ' ')
-		{	
+		{
 			//G_ifile >> temp;
 			getline(G_ifile, l_grammar);
 			//cout << l_grammar << endl;
+
+			nullable.insert(pair<string, bool>(trimEnd(l_grammar), false));
+			first.insert(pair<string, set<string> >(trimEnd(l_grammar), {})); // only can read by C++11
+			follow.insert(pair<string, set<string> >(trimEnd(l_grammar), {})); // only can read by C++11
 		}
 		else
 		{
 			getline(G_ifile, r_grammar);
-			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));  
+			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));
+			//cout << trimEnd(l_grammar) << endl;
+			//cout << " || " ;
+			//cout << trimEnd(l_grammar).length() <<endl;
 		}
 		//G_ifile.seekg(1, ios::cur);
 	}
-	
+
 	//map_overview(grammar);
-	/*length[i] = j;
-	
-	G[0][0] = 'S';
-	G[0][1] = G[1][0];
-	length[0] = 2;
-	for(int i = 0; i < 64; i++)
-		if(tempofinput[i])
-			str_vt[size_vt++] = i;
-	for(int i = 91; i < 128; i++)
-		if(tempofinput[i])
-			str_vt[size_vt++] = i;
-	for(int i = 65; i < 91; i++)
-		if(tempofinput[i])
-			str_vn[size_vn++] = i;*/
+
 }
 
-bool find_nullable(string str)
-{
+/*bool find_nullable(string str)
+{//cout <<str<<endl;
 	if(str == "epsilon")
 		return true;
-	
-	if((str.at(0) <= 65) || (str.at(0) >= 90))
+
+	if((str.at(0) < 65) || (str.at(0) > 90))
 		return false;
 
 	bool l_res = false, r_res = true;
-	multimap<string, string>::iterator beg, end;  
+	multimap<string, string>::iterator beg, end;
 	string token;
-	
+
 	beg = grammar.lower_bound(str);
 	//end = grammar.upper_bound(str);
 	//end++;
 	//beg++;
 
-	cout << trimEnd(beg -> first).length() << endl;
-	cout << beg -> second << endl;
-	cout << trimEnd(str).length() << endl;
-	//int count = grammar.count("BinOp");  
+	//cout << (beg -> first).length() << endl;
+	//cout << beg++ -> second << endl;
+	//cout << beg++ -> second << endl;
+	//cout << (str).length() << endl;
+	//int count = grammar.count("BinOp");
 	//cout << count << endl;
 
-	while(0) 
-	{cout << "1" << endl;
+	while(beg -> first == str)
+	{//cout << "1" << endl;
 		istringstream iss(beg -> second);
-		//string token;
-	
+		string token;
+
 		r_res = true;
 		while(getline(iss, token, ' '))
 		{//cout << "2" << endl;
@@ -121,11 +139,218 @@ bool find_nullable(string str)
 		}
 
 		l_res |= r_res;
-		
+
 		beg++;
 	}
 
 	return l_res;
+}
+*/
+
+void find_nullable()
+{
+	map<string, bool>::iterator iter, beg, end, find;
+	multimap<string, string>::iterator Mbeg, Mend;
+	string str, token;
+
+	for (iter = nullable.begin(); iter != nullable.end(); iter++)  
+	{
+			//cout << iter->first << " " << iter->second << endl;
+		str = iter -> first;
+		Mbeg = grammar.lower_bound(str);
+
+		while(Mbeg -> first == str)
+		{//cout << str << endl;
+			if(Mbeg -> second == "epsilon")
+			{
+				find = nullable.find(str);
+				find -> second = true;
+			}
+
+			if (++Mbeg == grammar.end())
+				break;
+
+			//Mbeg++;
+		}
+	}
+	
+	bool check = true, r_res = true;
+
+	while(check)
+	{
+		check = false;
+
+		for (iter = nullable.begin(); iter != nullable.end(); iter++) 
+		{ 
+			//cout << iter->first << " " << iter->second << endl;
+			str = iter -> first;
+			Mbeg = grammar.lower_bound(str);
+
+			while(Mbeg -> first == str)
+			{
+				istringstream iss(Mbeg -> second);
+				string token;
+
+				r_res = true;
+				while(getline(iss, token, ' '))
+					r_res &= is_nullable(token);
+
+				if(r_res)
+					break;
+
+				if (++Mbeg == grammar.end())
+					break;
+
+				//Mbeg++;
+			}
+
+			find = nullable.find(str);
+			
+			if (find -> second != r_res) // continue
+			{
+				check = true;
+				find -> second = r_res;
+			}
+		}
+	}
+}
+
+set<string> get_first(string str)
+{
+	set<string> res;
+	multimap<string, string>::iterator Mbeg, Mend;
+	map<string, set<string> >::iterator iter;
+	set<string>::iterator union_res;
+
+	Mbeg = grammar.lower_bound(str);
+
+	while(Mbeg -> first == str)
+	{
+		istringstream iss(Mbeg -> second);
+		string token;
+		bool temp = true;
+
+		while(getline(iss, token, ' '))
+		{
+			if (token == "epsilon")
+				break;
+			else if ((token.at(0) < 65) || (token.at(0) > 90))
+				res.insert(token);
+			else
+			{
+				iter = first.find(token);
+				res.insert((iter->second).begin(), (iter->second).end());
+
+				if(nullable.find(token) -> second)
+					continue;
+			}
+
+			break;
+		}
+
+		if (++Mbeg == grammar.end())
+			break;
+				//Mbeg++;
+	}
+	
+	return res;
+}
+
+void find_first()
+{
+	bool check = true;
+	set<string> get_res;
+	map<string, set<string> >::iterator iter;
+	string str;
+
+	while(check)
+	{
+		check = false;
+
+		for (iter = first.begin(); iter != first.end(); iter++) 
+		{ 
+			//cout << iter->first << " " << iter->second << endl;
+			str = iter -> first;
+
+			get_res = get_first(str);
+		
+			if (get_res != iter -> second) // continue
+			{	
+				(iter -> second).insert(get_res.begin(), get_res.end());				
+				check = true;
+			}	
+		}
+	}
+}
+
+set<string> get_follow(string str)
+{	
+	set<string> res;
+	multimap<string, string>::iterator Mbeg, Mend, Miter;
+	map<string, set<string> >::iterator iter;
+
+	for(Miter = grammar.begin(); Miter != grammar.end(); Miter++)
+	{
+		istringstream iss(Miter -> second);
+		string token;
+		bool next = false, is_tail = false;
+		
+		while(getline(iss, token, ' '))
+		{ 
+			if(next)
+			{
+				if((token.at(0) < 65) || (token.at(0) > 90))
+					res.insert(token);
+				else
+				{
+					iter = first.find(token);
+					res.insert((iter -> second).begin(), (iter -> second).end());
+				}
+				
+				if (nullable.find(token) -> second)
+					next = true;
+				else
+					next = false;
+			}
+
+			if (token == str)
+				next = true;
+		}
+
+		if (next) // at the tail
+		{
+			iter = follow.find(Miter -> first);
+			res.insert((iter -> second).begin(), (iter -> second).end());
+		}
+	}
+	return res;
+}
+
+void find_follow()
+{
+	bool check = true;
+	set<string> get_res;
+	map<string, set<string> >::iterator iter;
+	string str;
+
+	while(check)
+	{
+		check = false;
+
+		for (iter = follow.begin(); iter != follow.end(); iter++) 
+		{ 
+			//cout << iter->first << " " << iter->second << endl;
+			str = iter -> first;
+
+			get_res = get_follow(str);
+		
+			if (get_res != iter -> second) // continue
+			{	
+				(iter -> second).insert(get_res.begin(), get_res.end());				
+				check = true;
+			}	
+		}
+	}
 }
 
 int main()
@@ -136,7 +361,18 @@ int main()
 	//cout << G_ifile;
 	read_G();
 
-	cout << find_nullable("ExprList") << endl;
+	find_nullable() ;
+	find_first();
+	find_follow();
+
+/*	for (multimap<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
+	{
+		cout << iter->first << endl;
+		cout << " -> " ;
+		for (set<string>::iterator iiter = (iter->second).begin(); iiter != (iter->second).end(); iiter++)
+			cout << *iiter << " ";
+		cout <<endl;
+	}*/
 
 	G_ifile.close();
 }
