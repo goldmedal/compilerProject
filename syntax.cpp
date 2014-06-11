@@ -49,7 +49,7 @@ bool is_nullable(string str)
 	}
 }
 
-void map_overview(multimap<string, string> G)
+void multimap_overview(multimap<string, string> G)
 {
 	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)
 	{
@@ -58,6 +58,17 @@ void map_overview(multimap<string, string> G)
 		cout << iter->second << endl;
 	}
 }
+
+void map_overview(multimap<string, bool> G)
+{
+	for (multimap<string, bool>::iterator iter = G.begin(); iter != G.end(); iter++)
+	{
+		cout << iter->first << endl;
+		cout << " -> " ;
+		cout << iter->second << endl;
+	}
+}
+
 
 void read_G()
 {
@@ -217,6 +228,8 @@ int main()
 	read_G();
 
 	find_nullable() ;
+
+	map_overview(nullable);
 
 	G_ifile.close();
 }
