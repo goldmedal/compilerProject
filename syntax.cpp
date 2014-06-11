@@ -33,6 +33,22 @@ string trimEnd(string str)
 	return r.erase(0, r.find_first_not_of(delim));
 }
 
+bool is_nullable(string str)
+{
+	if (str == "epsilon")
+		return true;
+	else if ((str.at(0) < 65) || (str.at(0) > 90))
+		return false;
+	else 
+	{
+		map<string, bool>::iterator iter;
+
+		iter = nullable.find(str);
+
+		return iter -> second;
+	}
+}
+
 void map_overview(multimap<string, string> G)
 {
 	for (multimap<string, string>::iterator iter = G.begin(); iter != G.end(); iter++)
@@ -150,17 +166,47 @@ void find_nullable()
 		}
 	}
 	
-	bool check = true;
+	bool check = true, r_res = true;
 
 	while(check)
 	{
+		check = false;
+
 		for (iter = nullable.begin(); iter != nullable.end(); iter++) 
 		{ 
 			//cout << iter->first << " " << iter->second << endl;
+			str = iter -> first;
+			Mbeg = grammar.lower_bound(str);
+
+			while(Mbeg -> first == str)
+			{
+				istringstream iss(Mbeg -> second);
+				string token;
+
+				r_res = true;
+				while(getline(iss, token, ' '))
+					r_res &= is_nullable(token);
+
+				if(r_res)
+					break;
+
+				if (++Mbeg == grammar.end())
+					break;
+
+				//Mbeg++;
+			}
+
+			find = nullable.find(str);
 			
+			if (find -> second != r_res) // continue
+			{
+				check = true;
+				find -> second == r_res
+			}
 		}
 	}
 }
+
 
 int main()
 {
