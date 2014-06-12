@@ -248,15 +248,16 @@ set<string> get_first(string str)
 
 		if (++Mbeg == grammar.end())
 			break;
-
 				//Mbeg++;
 	}
 	
+	return res;
 }
 
 void find_first()
 {
 	bool check = true;
+	set<string> get_res;
 	map<string, set<string> >::iterator iter, beg, end, find;
 	multimap<string, string>::iterator Mbeg, Mend;
 	string str;
@@ -273,29 +274,15 @@ void find_first()
 
 			while(Mbeg -> first == str)
 			{
-				istringstream iss(Mbeg -> second);
-				string token;
-
-				r_res = true;
-				while(getline(iss, token, ' '))
-					r_res &= is_nullable(token);
-
-				if(r_res)
-					break;
+				get_res = get_first(str);
+				(iter -> second).insert(get_res.begin(), get_res.end());
 
 				if (++Mbeg == grammar.end())
 					break;
-
-				//Mbeg++;
 			}
-
-			find = nullable.find(str);
 			
-			if (find -> second != r_res) // continue
-			{
+			if (!get_res.empty()) // continue
 				check = true;
-				find -> second = r_res;
-			}
 		}
 	}
 }
