@@ -4,56 +4,125 @@ Line  1:
          <Special>    : ;
 Line  2:
          <Keyword>    : int
+         <Identifier> : y
+         <Special>    : ;
+Line  3:
+         <Keyword>    : int
          <Identifier> : main
          <Special>    : (
          <Special>    : )
          <Special>    : {
-Line  3:
-         <Keyword>    : int
-         <Identifier> : a
-         <Special>    : ;
 Line  4:
          <Keyword>    : int
-         <Identifier> : b
+         <Identifier> : a
+         <Special>    : [
+         <Number>     : 3
+         <Special>    : ]
          <Special>    : ;
 Line  5:
          <Identifier> : a
+         <Special>    : [
+         <Number>     : 2
+         <Special>    : ]
          <Operators>  : =
+         <Identifier> : a
+         <Special>    : [
          <Number>     : 0
+         <Special>    : ]
+         <Operators>  : +
+         <Identifier> : a
+         <Special>    : [
+         <Number>     : 1
+         <Special>    : ]
          <Special>    : ;
 Line  6:
-         <Keyword>    : while
-         <Special>    : (
-         <Operators>  : !
-         <Special>    : (
-         <Identifier> : a
-         <Special>    : )
-         <Special>    : )
-         <Special>    : {
-Line  7:
          <Identifier> : x
-         <Operators>  : =
-         <Identifier> : a
-         <Operators>  : +
-         <Identifier> : b
-         <Special>    : ;
-Line  8:
-         <Keyword>    : break
-         <Special>    : ;
-Line  9:
-         <Identifier> : b
          <Operators>  : =
          <Number>     : 1
          <Special>    : ;
-Line 10:
-         <Special>    : }
+Line  7:
+         <Identifier> : y
+         <Operators>  : =
+         <Number>     : 20
+         <Special>    : ;
+Line  9:
+         <Identifier> : x
+         <Operators>  : =
+         <Identifier> : y
+         <Operators>  : +
+         <Number>     : 1
+         <Special>    : ;
+Line 11:
+         <Keyword>    : if
+         <Special>    : (
+         <Identifier> : x
+         <Operators>  : >
+         <Number>     : 0
+         <Special>    : )
+         <Special>    : {
+Line 12:
+         <Identifier> : x
+         <Operators>  : =
+         <Number>     : 100
+         <Special>    : ;
 Line 13:
          <Special>    : }
+Line 14:
+         <Keyword>    : else
+         <Special>    : {
 Line 15:
-         <Keyword>    : int
+         <Identifier> : x
+         <Operators>  : =
+         <Number>     : 5
+         <Special>    : ;
+Line 16:
+         <Special>    : }
+Line 18:
+         <Identifier> : y
+         <Operators>  : =
+         <Number>     : 1
+         <Operators>  : +
+         <Number>     : 5
+         <Special>    : ;
+Line 20:
+         <Keyword>    : while
+         <Special>    : (
+         <Identifier> : x
+         <Operators>  : >
+         <Number>     : 5
+         <Special>    : )
+Line 21:
+         <Special>    : {
+Line 22:
+         <Identifier> : y
+         <Operators>  : =
+         <Identifier> : x
+         <Operators>  : +
+         <Number>     : 40
+         <Special>    : ;
+Line 23:
+         <Identifier> : x
+         <Operators>  : =
+         <Number>     : 3
+         <Special>    : ;
+Line 24:
+         <Special>    : }
+Line 26:
+         <Identifier> : x
+         <Operators>  : =
+         <Number>     : 1
+         <Operators>  : *
          <Identifier> : y
          <Special>    : ;
-Line 17:
+Line 28:
+         <Keyword>    : return
+         <Identifier> : x
+         <Operators>  : +
+         <Number>     : 3
+         <Special>    : ;
+Line 29:
+         <Special>    : }
+Line 31:
          <Keyword>    : int
          <Identifier> : doub
          <Special>    : (
@@ -64,11 +133,11 @@ Line 17:
          <Identifier> : d
          <Special>    : )
          <Special>    : {
-Line 18:
+Line 33:
          <Keyword>    : return
          <Identifier> : c
          <Operators>  : *
          <Identifier> : d
          <Special>    : ;
-Line 19:
+Line 34:
          <Special>    : }

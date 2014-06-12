@@ -1,10 +1,9 @@
 doub  id int    0
 main  id int    0
-x     id int    0
+x     id        0
 y     id int    0
 
-a     id int    1
-b     id int    1
+a     id int[]  1
 
 c     id int    2
 d     id int    2
