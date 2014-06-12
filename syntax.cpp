@@ -3,7 +3,9 @@
 #include <stack>
 #include <utility>
 #include <map>
+#include <set>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -11,15 +13,7 @@ ifstream G_ifile;
 
 multimap<string, string> grammar;
 map<string, bool> nullable;
-
-char G[20][20]; //use a matrix to store grammar G
-int length[20]; //length use to store each formula's length
-int number = 0;
-bool tempofinput[150]; //buffer of input
-char str_vn[20]; //put all vn into it
-int size_vn = 0;
-char str_vt[150]; //put all vt into it
-int size_vt = 0;
+map<string, set<string> > first;
 
 void initial()
 {
@@ -89,6 +83,7 @@ void read_G()
 			//cout << l_grammar << endl;
 
 			nullable.insert(pair<string, bool>(trimEnd(l_grammar), false));
+			first.insert(pair<string, set<string> >(trimEnd(l_grammar), {}));
 		}
 		else
 		{
@@ -218,6 +213,92 @@ void find_nullable()
 	}
 }
 
+set<string> get_first(string str)
+{
+	set<string> res;
+	multimap<string, string>::iterator Mbeg, Mend;
+	map<string, set<string> >::iterator iter;
+	set<string>::iterator union_res;
+
+	Mbeg = grammar.lower_bound(str);
+
+	while(Mbeg -> first == str)
+	{
+		istringstream iss(Mbeg -> second);
+		string token;
+		bool temp = true;
+
+		while(getline(iss, token, ' '))
+		{
+			if (token == "epsilon")
+				break;
+			else if ((token.at(0) < 65) || (token.at(0) > 90))
+				res.insert(token);
+			else
+			{
+				iter = first.find(token);
+				res.insert((iter->second).begin(), (iter->second).end());
+
+				if(nullable.find(token) -> second)
+					continue;
+			}
+
+			break;
+		}
+
+		if (++Mbeg == grammar.end())
+			break;
+
+				//Mbeg++;
+	}
+	
+}
+/*
+void find_first()
+{
+	bool check = true;
+	map<string, set<string> >::iterator iter, beg, end, find;
+	multimap<string, string>::iterator Mbeg, Mend;
+	string str;
+
+	while(check)
+	{
+		check = false;
+
+		for (iter = first.begin(); iter != first.end(); iter++) 
+		{ 
+			//cout << iter->first << " " << iter->second << endl;
+			str = iter -> first;
+			Mbeg = grammar.lower_bound(str);
+
+			while(Mbeg -> first == str)
+			{
+				istringstream iss(Mbeg -> second);
+				string token;
+
+				r_res = true;
+				while(getline(iss, token, ' '))
+					r_res &= is_nullable(token);
+
+				if(r_res)
+					break;
+
+				if (++Mbeg == grammar.end())
+					break;
+
+				//Mbeg++;
+			}
+
+			find = nullable.find(str);
+			
+			if (find -> second != r_res) // continue
+			{
+				check = true;
+				find -> second = r_res;
+			}
+		}
+	}
+}*/
 
 int main()
 {
@@ -228,8 +309,6 @@ int main()
 	read_G();
 
 	find_nullable() ;
-
-	map_overview(nullable);
 
 	G_ifile.close();
 }
