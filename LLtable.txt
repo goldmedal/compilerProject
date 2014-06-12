@@ -30,22 +30,22 @@ Expr                (         ( Expr ) Expr'
 Expr                -         UnaryOp Expr Expr'
 Expr                id        id Primary Expr'
 Expr                num       num Expr'
-Expr'               !=        epsilon
-Expr'               &&        epsilon
+Expr'               !=        BinOp' Expr Expr'
+Expr'               &&        BinOp' Expr Expr'
 Expr'               )         epsilon
-Expr'               *         epsilon
-Expr'               +         epsilon
+Expr'               *         BinOp Expr Expr'
+Expr'               +         BinOp Expr Expr'
 Expr'               ,         epsilon
-Expr'               -         epsilon
-Expr'               /         epsilon
+Expr'               -         BinOp Expr Expr'
+Expr'               /         BinOp Expr Expr'
 Expr'               ;         epsilon
-Expr'               <         epsilon
-Expr'               <=        epsilon
-Expr'               ==        epsilon
-Expr'               >         epsilon
-Expr'               >=        epsilon
+Expr'               <         BinOp' Expr Expr'
+Expr'               <=        BinOp' Expr Expr'
+Expr'               ==        BinOp' Expr Expr'
+Expr'               >         BinOp' Expr Expr'
+Expr'               >=        BinOp' Expr Expr'
 Expr'               ]         epsilon
-Expr'               ||        epsilon
+Expr'               ||        BinOp' Expr Expr'
 ExprList            !         ExprListTail
 ExprList            (         ExprListTail
 ExprList            )         epsilon

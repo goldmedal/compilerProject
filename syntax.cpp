@@ -9,6 +9,7 @@
 //#include <string>
 #include <iomanip>
 #include <cstdlib>
+
 using namespace std;
 
 ifstream G_ifile;
@@ -17,6 +18,11 @@ struct node
 {
 	string value;
 	int degree;
+};
+
+struct quad
+{
+	string op, arg1, arg2, res;
 };
 
 set<string> null_set;
@@ -29,8 +35,14 @@ map<string, set<string> > first;
 map<string, set<string> > follow;
 map<string, map<string, string> > LLtable;
 
+void init_semantic_rule()
+{
+
+}
+
 void initial()
 {
+	init_semantic_rule();
 	null_set.clear();
 	null_map.clear();
 }
@@ -388,7 +400,8 @@ void create_LLtable()
 	for(Miter = grammar.begin(); Miter != grammar.end(); Miter++)
 	{
 		str = Miter -> first;
-		Mbeg = first.lower_bound(str);
+
+		//Mbeg = first.lower_bound(str);
 
 		first_set = get_right_first(Miter -> second);
 
@@ -396,17 +409,23 @@ void create_LLtable()
 		{
 			if(((*Siter).at(0) < 65) || ((*Siter).at(0) > 90))
 				((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, Miter -> second));
+			
 		}
-
+	}
+	
+	for(Miter = grammar.begin(); Miter != grammar.end(); Miter++)
+	{
+		str = Miter -> first;
 		if (is_produce_epsilon(str))
 		{
 			iter = follow.find(str);
 			for (Siter = (iter -> second).begin(); Siter != (iter -> second).end(); Siter++)
 			{
-				if(((*Siter).at(0) < 65) || ((*Siter).at(0) > 90))
+				if((((*Siter).at(0) < 65) || ((*Siter).at(0) > 90)) && (((LLtable.find(str)) -> second).find(*Siter) == ((LLtable.find(str)) -> second).end()))
 					((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, "epsilon"));
 			}
 		}
+
 	}
 }
 
@@ -481,7 +500,7 @@ void create_tree()
 					token = stack.back().value;
 					tree.push_back(stack.back());
 //cout << stack.back().degree << token << " " << token_oneline << endl;
-					if (token == "id")
+					if (token == "id" || token == "num")
 					{
 						node_temp.value = token_oneline;
 						node_temp.degree = cur_degree;
@@ -499,7 +518,7 @@ void create_tree()
 
 					stack.pop_back();
 					rule = get_rule(token, token_oneline);
-//cout << token << " " << token_oneline << endl;
+//if(token == "num") cout << token << " " << token_oneline << endl;
 					istringstream iss(rule);
 					if (rule == "epsilon")
 					{
