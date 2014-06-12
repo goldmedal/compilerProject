@@ -11,5 +11,4 @@ int y ;
 
 int doub ( int c , int d ) {
 	return c * d ;
-	y = 1 ;
 }

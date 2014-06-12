@@ -1,6 +1,5 @@
 #include<iostream>
 #include<iomanip>
-#include<vector>
 #include<map>
 #include<string>
 #include<algorithm>
@@ -79,7 +78,7 @@ map<int, STable> build_symbol_table(TOKENLIST tokenList){
 
 	for(TOKENLIST::iterator iter = tokenList.begin(); iter != tokenList.end(); iter++){
 		string category = (*iter).category;
- // 		cout << (*iter).symbol << " " << (*iter).category << " " << (*iter).line << endl;
+  		cout << (*iter).symbol << " " << (*iter).category << " " << (*iter).line << endl;
 		if(!(category.compare("Keyword"))){
 			if((*iter).symbol ==  "int" || (*iter).symbol == "char"){
 				tmpColumn.dataType = (*iter).symbol;
