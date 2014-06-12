@@ -3,8 +3,6 @@
 #include<map>
 #include<string>
 #include<algorithm>
-#include"lexer.h"
-
 using namespace std;
 
 typedef struct symbolColumn {
@@ -40,23 +38,6 @@ bool SCOL_empty(SCOL scol){
 }
 
 
-int main(int argc, char* argv[]){
-
-	char* fileName = argv[1];
-	fstream fin;
-	fin.open(fileName, ios::in);
-	TOKENLIST tokenList;
-	STable symTable; 
-	map<int, STable> symTableList;
-	
-	tokenList = lexer(fin);
-	output_token_list(tokenList);
-	symTableList = build_symbol_table(tokenList);
-	output_symbol_table(symTableList);
-	fin.close();
-
-}
-
 map<int, STable> build_symbol_table(TOKENLIST tokenList){
 
 	int scope = 0;
@@ -65,6 +46,7 @@ map<int, STable> build_symbol_table(TOKENLIST tokenList){
 	bool notDeclared = false;
 	bool funcPara = false;
 	bool assign = false;
+	int keywordLine = -1;
 	map<int, bool> numOfSTable;
 	map<int, STable> symTableList;
 	STable symTable;
@@ -78,10 +60,21 @@ map<int, STable> build_symbol_table(TOKENLIST tokenList){
 
 	for(TOKENLIST::iterator iter = tokenList.begin(); iter != tokenList.end(); iter++){
 		string category = (*iter).category;
-  		cout << (*iter).symbol << " " << (*iter).category << " " << (*iter).line << endl;
+// 		cout << (*iter).symbol << " " << (*iter).category << " " << (*iter).line << endl;
+		if((*iter).line == keywordLine){
+
+			if((*iter).symbol == "{"){
+				keywordLine = -1;
+			}else{
+				continue;
+			}
+
+		}
 		if(!(category.compare("Keyword"))){
 			if((*iter).symbol ==  "int" || (*iter).symbol == "char"){
 				tmpColumn.dataType = (*iter).symbol;
+			}else if((*iter).symbol == "while" || (*iter).symbol == "if"){
+				keywordLine = (*iter).line;
 			}
 		}else if(!(category.compare("Operators"))){
 			string symbol = (*iter).symbol;
@@ -106,7 +99,8 @@ map<int, STable> build_symbol_table(TOKENLIST tokenList){
 			}else if(!(symbol.compare("}"))){
 				numOfSTable[scope] = false;
 				symTableList[scope] = symTable;
-				while(!(numOfSTable[--scope]));
+				while(!(numOfSTable[--scope]) && scope == 0);
+				if(scope < 0 ) scope = 0;
 				symTable = symTableList[scope];
 			}else if(!(symbol.compare("("))){
 				TOKENLIST::iterator lastIter = iter - 2;
@@ -214,12 +208,11 @@ void output_symbol_table(map<int,STable> symTableList){
 		}
 		fout << "\n";
 	}
-
+	fout.close();
 }
 
 
 int search_different_scope(map<int, STable> symTableList, map<int, bool> checkTable, string index, int nowScope){
-
 	int i = nowScope-1;
 	if(i >= 0){
 		while(!(checkTable[i]) && i >= 0) i -= 1;

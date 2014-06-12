@@ -1,10 +1,15 @@
 int x ;
 int main ( ) {
-	int a ;
+	int a ;  // aaa
 	int b ;
 	a = 0 ;
-	b = 1 ;
+	while ( ! ( a ) ) { 
 	x = a + b ;
+	break ;
+	b = 1 ;
+	}
+
+
 }
 
 int y ;

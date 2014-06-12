@@ -44,6 +44,7 @@ TOKENLIST lexer(fstream &fin){
 				token = bufferString.substr(start, i-start);
 				if(!token.empty()){
 					category = divide_token(token);
+					if(category == "Comment") break;
 					if(!category.empty()){
 						backTokenList.insert(backTokenList.end(), set_token(line, category, token));
 					}
@@ -55,7 +56,7 @@ TOKENLIST lexer(fstream &fin){
 			i++;
 
 		}
-
+		if(category != "Comment"){
 		token = bufferString.substr(start, 1);
 
 		if(!token.empty()){
@@ -63,6 +64,7 @@ TOKENLIST lexer(fstream &fin){
 			if(!category.empty()){
 				backTokenList.insert(backTokenList.end(), set_token(line, category, token));
 			}
+		}
 		}
 		token.clear();
 		line++;
@@ -144,7 +146,6 @@ void output_token_list(TOKENLIST tokenList){
 	TOKEN nextToken;
 
 	while(i < tokenList.size()){
-
 		if(i == 0 || ( tokenList[i-1].line != tokenList[i].line )){
 			fout << "Line" << right << setw(3) << tokenList[i].line << ":" << endl;
 		}

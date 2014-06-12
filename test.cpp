@@ -1,6 +1,9 @@
 #include <ctype.h>
+#include"lexer.h"
+#include"symbol.h"
+#include"quadruples.h"
 
-string op(string str)
+string opcode(string str)
 {
       if(str == "+")return "ADD";
       if(str == "-")return "SUB";
@@ -18,7 +21,17 @@ string op(string str)
       cout << "Wrong op!" << endl;
 }
 
-void machine_code()
+struct Quad_row{ 
+	int index;
+	string op;
+	string arg1;
+	string arg2;
+	string result;
+};
+
+vector<string> var;
+int mem_add(string tok);
+void machine_code(vector<struct Quad_row> quadruple)
 {
       ofstream outfile;
       outfile.open ("code.tm");
@@ -26,8 +39,8 @@ void machine_code()
       int line = 0;
       int reg_num = 1;
       int reg1, mem, while_jump = 0;
-      outfile << line++ << ": LDC 0,0(0)" << endl;  //reg(0)=0;
-      
+      outfile << line++ << ": LDC 0,0(0)" << endl;  
+     
       vector<struct Quad_row>::iterator Qiter ; 
       for(Qiter = quadruple.begin(); Qiter != quadruple.end(); Qiter++)
       {
@@ -42,7 +55,7 @@ void machine_code()
                         if(reg1==1)reg1=6;
                         outfile << line++ << ": ST " << reg1-1 << "," << mem << "(0)"<< endl;
                   }
-                  else if(Qiter->arg1[0]!='t' && isdigit(Qiter->arg1[0]))  //存到暫存器
+                  else if(Qiter->arg1[0]!='t' && isdigit(Qiter->arg1[0])) 
                   {
                         reg1=reg_num;
                         outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg1 << "(0)"<< endl;
@@ -59,7 +72,6 @@ void machine_code()
                   
                   if(Qiter->arg1[0]!='t' && Qiter->arg2[0]!='t')
                   {
-                        //cout <<"reg= " << reg_num <<endl;
                         if(   !(isdigit(Qiter->arg1[0])) && !(isdigit(Qiter->arg2[0])) )
                         {
                               outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg1) << "(0)"<< endl;
@@ -93,7 +105,6 @@ void machine_code()
                   }
                   else
                   {
-                        //cout<< "haha";
                         outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg1 << "," << reg1-1 << endl;
                         reg1=reg_num;
                         reg_num++;
@@ -112,7 +123,6 @@ void machine_code()
                   if(reg_num+3>6)reg_num=1;
                   if(Qiter->arg1[0]!='t' && Qiter->arg2[0]!='t')
                   {
-                        //cout <<"reg= " << reg_num <<endl;
                         while_jump = line;
                         if(   !(isdigit(Qiter->arg1[0])) && !(isdigit(Qiter->arg2[0])) )
                         {
@@ -147,7 +157,6 @@ void machine_code()
                   }
                   else
                   {
-                        //cout<< "haha";
                         outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg1 << "," << reg1-1 << endl;
                         reg_num++;
                   }
@@ -169,8 +178,6 @@ void machine_code()
                         
                         if(qiter->op=="jmp")break;
                   }
-                  //cout << "things=" << things << endl;
-                  
                   
                   outfile << line++ << ": JEQ " << reg1 << "," << (line+things+2) << "(0)"<< endl;
             }
@@ -195,7 +202,6 @@ void machine_code()
                                     else things=things+1;
                               }
                         }
-                        //cout << "things=" << things << endl;
                         outfile << line++ << ": JEQ 0," << (line+things+2) << "(0)"<< endl;
                   }     
             }
@@ -231,5 +237,46 @@ int mem_add(string tok)
     var.push_back(tok);
       
     return var.size()-1;
+}
+
+vector<struct Quad_row> map2vector(QList quadList){
+
+	vector<struct Quad_row> Qrow;
+	for(QList::iterator iter = quadList.begin(); iter != quadList.end(); iter++){
+		struct Quad_row tmpRow;
+		tmpRow.index = iter->first;
+		tmpRow.op = (iter->second).op;
+		tmpRow.arg1 = (iter->second).arg1;
+		tmpRow.arg2 = (iter->second).arg2;
+		tmpRow.result = (iter->second).result;
+		Qrow.push_back(tmpRow);
+	}
+	return Qrow;
+
+}
+
+
+int main(int argc, char* argv[]){
+
+	char* fileName = argv[1];
+	fstream fin;
+	fin.open(fileName, ios::in);
+	TOKENLIST tokenList;
+	vector<struct Quad_row> Qrow;
+	STable symTable; 
+	QList quadList;
+	map<int, STable> symTableList;
+	
+	tokenList = lexer(fin);
+	output_token_list(tokenList);
+	symTableList = build_symbol_table(tokenList);
+	output_symbol_table(symTableList);
+	quadList = quadruples(tokenList, symTableList);
+   output_quadruples(quadList);
+	Qrow = map2vector(quadList);
+	machine_code(Qrow);
+
+	fin.close();
+
 }
 
