@@ -270,19 +270,14 @@ void find_first()
 		{ 
 			//cout << iter->first << " " << iter->second << endl;
 			str = iter -> first;
-			Mbeg = grammar.lower_bound(str);
 
-			while(Mbeg -> first == str)
-			{
-				get_res = get_first(str);
-				(iter -> second).insert(get_res.begin(), get_res.end());
-
-				if (++Mbeg == grammar.end())
-					break;
-			}
-			
-			if (!get_res.empty()) // continue
+			get_res = get_first(str);
+		
+			if (get_res != iter -> second) // continue
+			{	
+				(iter -> second).insert(get_res.begin(), get_res.end());				
 				check = true;
+			}	
 		}
 	}
 }
@@ -296,6 +291,16 @@ int main()
 	read_G();
 
 	find_nullable() ;
+	find_first();
 
+/*	for (multimap<string, set<string> >::iterator iter = first.begin(); iter != first.end(); iter++)
+	{
+		cout << iter->first << endl;
+		cout << " -> " ;
+		for (set<string>::iterator iiter = (iter->second).begin(); iiter != (iter->second).end(); iiter++)
+			cout << *iiter << " ";
+		cout <<endl;
+	}
+*/
 	G_ifile.close();
 }
