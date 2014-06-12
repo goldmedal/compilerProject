@@ -253,7 +253,7 @@ set<string> get_first(string str)
 	}
 	
 }
-/*
+
 void find_first()
 {
 	bool check = true;
@@ -298,7 +298,7 @@ void find_first()
 			}
 		}
 	}
-}*/
+}
 
 int main()
 {
