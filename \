@@ -1,4 +1,4 @@
-int x ;
+int x [ 2 ] ;
 int main ( ) {
 	int a ;
 	int b ;
@@ -11,5 +11,4 @@ int y ;
 
 int doub ( int c , int d ) {
 	return c * d ;
-	y = 1 ;
 }

@@ -21,21 +21,6 @@ string divide_token(string token);
 void output_token_list(TOKENLIST);
 TOKEN set_token(int line, string category, string symbol);
 
-int main(int argc, char* argv[]){
-
-	char* fileName = argv[1];
-	fstream fin;
-	fin.open(fileName, ios::in);
-	TOKENLIST tokenList;
-
-	tokenList = lexer(fin);
-	output_token_list(tokenList);
-	fin.close();
-
-	return 0;
-
-}
-
 TOKENLIST lexer(fstream &fin){
 
 	int start, line=1;

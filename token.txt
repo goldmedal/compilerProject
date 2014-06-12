@@ -57,4 +57,9 @@ Line 13:
          <Identifier> : d
          <Special>    : ;
 Line 14:
+         <Identifier> : y
+         <Operators>  : =
+         <Number>     : 1
+         <Special>    : ;
+Line 15:
          <Special>    : }
