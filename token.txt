@@ -35,12 +35,10 @@ Line  7:
          <Special>    : ;
 Line  8:
          <Special>    : }
-Line  9:
 Line 10:
          <Keyword>    : int
          <Identifier> : y
          <Special>    : ;
-Line 11:
 Line 12:
          <Keyword>    : int
          <Identifier> : doub
