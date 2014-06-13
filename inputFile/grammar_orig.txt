@@ -55,6 +55,7 @@ Expr
 Expr'
     epsilon
     BinOp Expr Expr'
+    BinOp' Expr Expr'
 Primary
     epsilon
     ( ExprList )
@@ -79,6 +80,7 @@ BinOp
     -
     *
     /
+BinOp'
     ==
     !=
     <
@@ -87,3 +89,4 @@ BinOp
     >=
     &&
     ||
+
