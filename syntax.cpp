@@ -296,7 +296,7 @@ set<string> get_follow(string str)
 		bool next = false, is_tail = false;
 		
 		while(getline(iss, token, ' '))
-		{
+		{ 
 			if(next)
 			{
 				if((token.at(0) < 65) || (token.at(0) > 90))
@@ -319,7 +319,7 @@ set<string> get_follow(string str)
 
 		if (next) // at the tail
 		{
-			iter = follow.find(str);
+			iter = follow.find(Miter -> first);
 			res.insert((iter -> second).begin(), (iter -> second).end());
 		}
 	}
@@ -337,7 +337,7 @@ void find_follow()
 	{
 		check = false;
 
-		for (iter = first.begin(); iter != first.end(); iter++) 
+		for (iter = follow.begin(); iter != follow.end(); iter++) 
 		{ 
 			//cout << iter->first << " " << iter->second << endl;
 			str = iter -> first;
@@ -363,15 +363,16 @@ int main()
 
 	find_nullable() ;
 	find_first();
+	find_follow();
 
-/*	for (multimap<string, set<string> >::iterator iter = first.begin(); iter != first.end(); iter++)
+/*	for (multimap<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
 	{
 		cout << iter->first << endl;
 		cout << " -> " ;
 		for (set<string>::iterator iiter = (iter->second).begin(); iiter != (iter->second).end(); iiter++)
 			cout << *iiter << " ";
 		cout <<endl;
-	}
-*/
+	}*/
+
 	G_ifile.close();
 }
