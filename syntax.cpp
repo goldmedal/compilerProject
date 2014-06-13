@@ -260,8 +260,7 @@ void find_first()
 {
 	bool check = true;
 	set<string> get_res;
-	map<string, set<string> >::iterator iter, beg, end, find;
-	multimap<string, string>::iterator Mbeg, Mend;
+	map<string, set<string> >::iterator iter;
 	string str;
 
 	while(check)
@@ -329,7 +328,29 @@ set<string> get_follow(string str)
 
 void find_follow()
 {
+	bool check = true;
+	set<string> get_res;
+	map<string, set<string> >::iterator iter;
+	string str;
 
+	while(check)
+	{
+		check = false;
+
+		for (iter = first.begin(); iter != first.end(); iter++) 
+		{ 
+			//cout << iter->first << " " << iter->second << endl;
+			str = iter -> first;
+
+			get_res = get_follow(str);
+		
+			if (get_res != iter -> second) // continue
+			{	
+				(iter -> second).insert(get_res.begin(), get_res.end());				
+				check = true;
+			}	
+		}
+	}
 }
 
 int main()
