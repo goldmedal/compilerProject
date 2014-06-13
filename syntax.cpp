@@ -194,12 +194,40 @@ void find_nullable()
 	}
 }
 
+set<string> get_right_first(string str)
+{
+	set<string> res;
+	map<string, set<string> >::iterator iter;
+
+	istringstream iss(str);
+	string token;
+
+	while(getline(iss, token, ' '))
+	{
+		if (token == "epsilon")
+			break;
+		else if ((token.at(0) < 65) || (token.at(0) > 90))
+			res.insert(token);
+		else
+		{
+			iter = first.find(token);
+			res.insert((iter -> second).begin(), (iter -> second).end());
+
+			if(nullable.find(token) -> second)
+				continue;
+		}
+
+		break;
+	}
+
+	return res;
+}
+
 set<string> get_first(string str)
 {
 	set<string> res;
 	multimap<string, string>::iterator Mbeg, Mend;
 	map<string, set<string> >::iterator iter;
-	set<string>::iterator union_res;
 
 	Mbeg = grammar.lower_bound(str);
 
@@ -218,7 +246,7 @@ set<string> get_first(string str)
 			else
 			{
 				iter = first.find(token);
-				res.insert((iter->second).begin(), (iter->second).end());
+				res.insert((iter -> second).begin(), (iter -> second).end());
 
 				if(nullable.find(token) -> second)
 					continue;
@@ -345,7 +373,7 @@ void create_LLtable()
 		str = Miter -> first;
 		Mbeg = first.lower_bound(str);
 
-		first_set = get_first(str);
+		first_set = get_right_first(Miter -> second);
 
 		for(Siter = first_set.begin(); Siter != first_set.end(); Siter++)
 		{
@@ -353,15 +381,15 @@ void create_LLtable()
 				((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, Miter -> second));
 		}
 
-		if (is_produce_epsilon(str))
+		/*if (is_produce_epsilon(str))
 		{
-			iter = follow.find(Miter -> first);
+			iter = follow.find(str);
 			for (Siter = (iter -> second).begin(); Siter != (iter -> second).end(); Siter++)
 			{
 				if(((*Siter).at(0) < 65) || ((*Siter).at(0) > 90))
 					((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, "epsilon"));
 			}
-		}
+		}*/
 	}
 }
 
@@ -425,6 +453,39 @@ void output_set()
 	ofile.close();
 }
 
+void output_LLtable()
+{
+	char filename[] = "LLtable.txt";
+
+	ofstream ofile;
+	ofile.open(filename, ios::out);
+
+	if(!ofile)
+	{
+    	cout << "Fail to open file: " << filename << endl;
+		return;
+	}
+
+	map<string, map<string, string> >::iterator iter;
+	map<string, string>::iterator iiter;
+
+	ofile << "S" << endl;
+	for (iter = LLtable.begin(); iter != LLtable.end(); iter++)
+	{
+		for (iiter = (iter -> second).begin(); iiter != (iter -> second).end(); iiter++)
+		{
+			ofile << setiosflags(ios::left) << setw(20) << iter -> first;
+			ofile << setiosflags(ios::left) << setw(10) << iiter -> first;
+			ofile << setiosflags(ios::left) << iiter -> second;
+			ofile << endl;
+		}
+
+	}
+
+	ofile.close();
+}
+
+
 int main()
 {
 	initial();
@@ -440,6 +501,7 @@ int main()
 	output_set();
 
 	create_LLtable();
+	output_LLtable();
 
 /*	for (map<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
 	{

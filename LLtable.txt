@@ -1,0 +1,117 @@
+S
+BinOp               !=        !=
+BinOp               &&        &&
+BinOp               *         *
+BinOp               +         +
+BinOp               -         -
+BinOp               /         /
+BinOp               <         <
+BinOp               <=        <=
+BinOp               ==        ==
+BinOp               >         >
+BinOp               >=        >=
+BinOp               ||        ||
+Block               {         { Block'
+Block'              !         StmtList }
+Block'              (         StmtList }
+Block'              -         StmtList }
+Block'              ;         StmtList }
+Block'              break     StmtList }
+Block'              char      VarDeclList StmtList }
+Block'              id        StmtList }
+Block'              if        StmtList }
+Block'              int       VarDeclList StmtList }
+Block'              num       StmtList }
+Block'              return    StmtList }
+Block'              while     StmtList }
+Block'              {         StmtList }
+Expr                !         UnaryOp Expr Expr'
+Expr                (         ( Expr ) Expr'
+Expr                -         UnaryOp Expr Expr'
+Expr                id        id Primary Expr'
+Expr                num       num Expr'
+Expr'               !=        BinOp Expr Expr'
+Expr'               &&        BinOp Expr Expr'
+Expr'               *         BinOp Expr Expr'
+Expr'               +         BinOp Expr Expr'
+Expr'               -         BinOp Expr Expr'
+Expr'               /         BinOp Expr Expr'
+Expr'               <         BinOp Expr Expr'
+Expr'               <=        BinOp Expr Expr'
+Expr'               ==        BinOp Expr Expr'
+Expr'               >         BinOp Expr Expr'
+Expr'               >=        BinOp Expr Expr'
+Expr'               ||        BinOp Expr Expr'
+ExprList            !         ExprListTail
+ExprList            (         ExprListTail
+ExprList            -         ExprListTail
+ExprList            id        ExprListTail
+ExprList            num       ExprListTail
+ExprListTail        !         Expr ExprListTail'
+ExprListTail        (         Expr ExprListTail'
+ExprListTail        -         Expr ExprListTail'
+ExprListTail        id        Expr ExprListTail'
+ExprListTail        num       Expr ExprListTail'
+ExprListTail'       ,         , ExprListTail
+ParamDecl           char      Type id ParamDecl'
+ParamDecl           int       Type id ParamDecl'
+ParamDecl'          [         [ ]
+ParamDeclList       char      ParamDeclListTail
+ParamDeclList       int       ParamDeclListTail
+ParamDeclListTail   char      ParamDecl ParamDeclListTail'
+ParamDeclListTail   int       ParamDecl ParamDeclListTail'
+ParamDeclListTail'  ,         , ParamDeclListTail
+Primary             (         ( ExprList )
+Primary             =         = Expr
+Primary             [         [ Expr ] Primary'
+Primary'            =         = Expr
+Program             char      VarDeclList
+Program             int       VarDeclList
+S                   char      Program $
+S                   int       Program $
+Stmt                !         Expr ;
+Stmt                (         Expr ;
+Stmt                -         Expr ;
+Stmt                ;         ;
+Stmt                break     break ;
+Stmt                id        Expr ;
+Stmt                if        if ( Expr ) Stmt else Stmt
+Stmt                num       Expr ;
+Stmt                return    return Expr ;
+Stmt                while     while ( Expr ) Stmt
+Stmt                {         Block
+StmtList            !         Stmt StmtList'
+StmtList            (         Stmt StmtList'
+StmtList            -         Stmt StmtList'
+StmtList            ;         Stmt StmtList'
+StmtList            break     Stmt StmtList'
+StmtList            id        Stmt StmtList'
+StmtList            if        Stmt StmtList'
+StmtList            num       Stmt StmtList'
+StmtList            return    Stmt StmtList'
+StmtList            while     Stmt StmtList'
+StmtList            {         Stmt StmtList'
+StmtList'           !         StmtList
+StmtList'           (         StmtList
+StmtList'           -         StmtList
+StmtList'           ;         StmtList
+StmtList'           break     StmtList
+StmtList'           id        StmtList
+StmtList'           if        StmtList
+StmtList'           num       StmtList
+StmtList'           return    StmtList
+StmtList'           while     StmtList
+StmtList'           {         StmtList
+Type                char      char
+Type                int       int
+UnaryOp             !         !
+UnaryOp             -         -
+VarDecl             char      Type id VarDecl'
+VarDecl             int       Type id VarDecl'
+VarDecl'            (         ( ParamDeclList ) Block
+VarDecl'            ;         ;
+VarDecl'            [         [ num ] ;
+VarDeclList         char      VarDecl VarDeclList'
+VarDeclList         int       VarDecl VarDeclList'
+VarDeclList'        char      VarDeclList
+VarDeclList'        int       VarDeclList
