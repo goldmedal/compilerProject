@@ -12,14 +12,19 @@ using namespace std;
 
 ifstream G_ifile;
 
+set<string> null_set;
+map<string, string> null_map;
+
 multimap<string, string> grammar;
 map<string, bool> nullable;
 map<string, set<string> > first;
 map<string, set<string> > follow;
+multimap<string, map<string, string> > LLtable;
 
 void initial()
 {
-
+	null_set.clear();
+	null_map.clear();
 }
 
 string trimEnd(string str)
@@ -65,7 +70,6 @@ void map_overview(map<string, bool> G)
 	}
 }
 
-
 void read_G()
 {
 	char temp = '0';
@@ -85,8 +89,9 @@ void read_G()
 			//cout << l_grammar << endl;
 
 			nullable.insert(pair<string, bool>(trimEnd(l_grammar), false));
-			first.insert(pair<string, set<string> >(trimEnd(l_grammar), {})); // only can read by C++11
-			follow.insert(pair<string, set<string> >(trimEnd(l_grammar), {})); // only can read by C++11
+			first.insert(pair<string, set<string> >(trimEnd(l_grammar), null_set)); 
+			follow.insert(pair<string, set<string> >(trimEnd(l_grammar), null_set)); 
+			LLtable.insert(pair<string, map<string, string> >(trimEnd(l_grammar), null_map));
 		}
 		else
 		{
@@ -102,51 +107,6 @@ void read_G()
 	//map_overview(grammar);
 
 }
-
-/*bool find_nullable(string str)
-{//cout <<str<<endl;
-	if(str == "epsilon")
-		return true;
-
-	if((str.at(0) < 65) || (str.at(0) > 90))
-		return false;
-
-	bool l_res = false, r_res = true;
-	multimap<string, string>::iterator beg, end;
-	string token;
-
-	beg = grammar.lower_bound(str);
-	//end = grammar.upper_bound(str);
-	//end++;
-	//beg++;
-
-	//cout << (beg -> first).length() << endl;
-	//cout << beg++ -> second << endl;
-	//cout << beg++ -> second << endl;
-	//cout << (str).length() << endl;
-	//int count = grammar.count("BinOp");
-	//cout << count << endl;
-
-	while(beg -> first == str)
-	{//cout << "1" << endl;
-		istringstream iss(beg -> second);
-		string token;
-
-		r_res = true;
-		while(getline(iss, token, ' '))
-		{//cout << "2" << endl;
-			//cout << token << endl;
-			r_res &= find_nullable(token);
-		}
-
-		l_res |= r_res;
-
-		beg++;
-	}
-
-	return l_res;
-}
-*/
 
 void find_nullable()
 {
@@ -354,6 +314,18 @@ void find_follow()
 	}
 }
 
+void create_LLtable()
+{
+	multimap<string, string>::iterator Mbeg, Mend, Miter;
+	map<string, set<string> >::iterator iter;
+	set<string> first_set;
+
+	for(Miter = grammar.begin(); Miter != grammar.end(); Miter++)
+	{
+
+	}
+}
+
 void output_set()
 {
 	char filename[] = "set.txt";
@@ -412,6 +384,24 @@ void output_set()
 	}
 
 	ofile.close();
+}
+
+bool is_produce_epsilon(string str)
+{
+	multimap<string, string>::iterator Mbeg;
+
+	Mbeg = grammar.lower_bound(str);
+
+	while(Mbeg -> first == str)
+	{
+		if(Mbeg -> second == "epsilon")
+			return true;
+
+		if (++Mbeg == grammar.end())
+			break;
+	}
+
+	return false;
 }
 
 int main()
