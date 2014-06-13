@@ -108,6 +108,24 @@ void read_G()
 
 }
 
+bool is_produce_epsilon(string str)
+{
+	multimap<string, string>::iterator Mbeg;
+
+	Mbeg = grammar.lower_bound(str);
+
+	while(Mbeg -> first == str)
+	{
+		if(Mbeg -> second == "epsilon")
+			return true;
+
+		if (++Mbeg == grammar.end())
+			break;
+	}
+
+	return false;
+}
+
 void find_nullable()
 {
 	map<string, bool>::iterator iter, beg, end, find;
@@ -316,13 +334,34 @@ void find_follow()
 
 void create_LLtable()
 {
-	multimap<string, string>::iterator Mbeg, Mend, Miter;
-	map<string, set<string> >::iterator iter;
+	multimap<string, string>::iterator Mend, Miter;
+	map<string, set<string> >::iterator iter ,Mbeg;
 	set<string> first_set;
+	set<string>::iterator Siter;
+	string str;
 
 	for(Miter = grammar.begin(); Miter != grammar.end(); Miter++)
 	{
+		str = Miter -> first;
+		Mbeg = first.lower_bound(str);
 
+		first_set = get_first(str);
+
+		for(Siter = first_set.begin(); Siter != first_set.end(); Siter++)
+		{
+			if(((*Siter).at(0) < 65) || ((*Siter).at(0) > 90))
+				((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, Miter -> second));
+		}
+
+		if (is_produce_epsilon(str))
+		{
+			iter = follow.find(Miter -> first);
+			for (Siter = (iter -> second).begin(); Siter != (iter -> second).end(); Siter++)
+			{
+				if(((*Siter).at(0) < 65) || ((*Siter).at(0) > 90))
+					((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, "epsilon"));
+			}
+		}
 	}
 }
 
@@ -386,24 +425,6 @@ void output_set()
 	ofile.close();
 }
 
-bool is_produce_epsilon(string str)
-{
-	multimap<string, string>::iterator Mbeg;
-
-	Mbeg = grammar.lower_bound(str);
-
-	while(Mbeg -> first == str)
-	{
-		if(Mbeg -> second == "epsilon")
-			return true;
-
-		if (++Mbeg == grammar.end())
-			break;
-	}
-
-	return false;
-}
-
 int main()
 {
 	initial();
@@ -417,6 +438,8 @@ int main()
 	find_follow();
 
 	output_set();
+
+	create_LLtable();
 
 /*	for (map<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
 	{
