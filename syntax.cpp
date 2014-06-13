@@ -381,7 +381,7 @@ void create_LLtable()
 				((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, Miter -> second));
 		}
 
-		/*if (is_produce_epsilon(str))
+		if (is_produce_epsilon(str))
 		{
 			iter = follow.find(str);
 			for (Siter = (iter -> second).begin(); Siter != (iter -> second).end(); Siter++)
@@ -389,7 +389,7 @@ void create_LLtable()
 				if(((*Siter).at(0) < 65) || ((*Siter).at(0) > 90))
 					((LLtable.find(str)) -> second).insert(pair<string, string>(*Siter, "epsilon"));
 			}
-		}*/
+		}
 	}
 }
 

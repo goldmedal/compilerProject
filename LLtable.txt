@@ -1,16 +1,16 @@
 S
-BinOp               !=        !=
-BinOp               &&        &&
 BinOp               *         *
 BinOp               +         +
 BinOp               -         -
 BinOp               /         /
-BinOp               <         <
-BinOp               <=        <=
-BinOp               ==        ==
-BinOp               >         >
-BinOp               >=        >=
-BinOp               ||        ||
+BinOp'              !=        !=
+BinOp'              &&        &&
+BinOp'              <         <
+BinOp'              <=        <=
+BinOp'              ==        ==
+BinOp'              >         >
+BinOp'              >=        >=
+BinOp'              ||        ||
 Block               {         { Block'
 Block'              !         StmtList }
 Block'              (         StmtList }
@@ -30,20 +30,25 @@ Expr                (         ( Expr ) Expr'
 Expr                -         UnaryOp Expr Expr'
 Expr                id        id Primary Expr'
 Expr                num       num Expr'
-Expr'               !=        BinOp Expr Expr'
-Expr'               &&        BinOp Expr Expr'
-Expr'               *         BinOp Expr Expr'
-Expr'               +         BinOp Expr Expr'
-Expr'               -         BinOp Expr Expr'
-Expr'               /         BinOp Expr Expr'
-Expr'               <         BinOp Expr Expr'
-Expr'               <=        BinOp Expr Expr'
-Expr'               ==        BinOp Expr Expr'
-Expr'               >         BinOp Expr Expr'
-Expr'               >=        BinOp Expr Expr'
-Expr'               ||        BinOp Expr Expr'
+Expr'               !=        epsilon
+Expr'               &&        epsilon
+Expr'               )         epsilon
+Expr'               *         epsilon
+Expr'               +         epsilon
+Expr'               ,         epsilon
+Expr'               -         epsilon
+Expr'               /         epsilon
+Expr'               ;         epsilon
+Expr'               <         epsilon
+Expr'               <=        epsilon
+Expr'               ==        epsilon
+Expr'               >         epsilon
+Expr'               >=        epsilon
+Expr'               ]         epsilon
+Expr'               ||        epsilon
 ExprList            !         ExprListTail
 ExprList            (         ExprListTail
+ExprList            )         epsilon
 ExprList            -         ExprListTail
 ExprList            id        ExprListTail
 ExprList            num       ExprListTail
@@ -52,19 +57,56 @@ ExprListTail        (         Expr ExprListTail'
 ExprListTail        -         Expr ExprListTail'
 ExprListTail        id        Expr ExprListTail'
 ExprListTail        num       Expr ExprListTail'
+ExprListTail'       )         epsilon
 ExprListTail'       ,         , ExprListTail
 ParamDecl           char      Type id ParamDecl'
 ParamDecl           int       Type id ParamDecl'
+ParamDecl'          )         epsilon
+ParamDecl'          ,         epsilon
 ParamDecl'          [         [ ]
+ParamDeclList       )         epsilon
 ParamDeclList       char      ParamDeclListTail
 ParamDeclList       int       ParamDeclListTail
 ParamDeclListTail   char      ParamDecl ParamDeclListTail'
 ParamDeclListTail   int       ParamDecl ParamDeclListTail'
+ParamDeclListTail'  )         epsilon
 ParamDeclListTail'  ,         , ParamDeclListTail
+Primary             !=        epsilon
+Primary             &&        epsilon
 Primary             (         ( ExprList )
+Primary             )         epsilon
+Primary             *         epsilon
+Primary             +         epsilon
+Primary             ,         epsilon
+Primary             -         epsilon
+Primary             /         epsilon
+Primary             ;         epsilon
+Primary             <         epsilon
+Primary             <=        epsilon
 Primary             =         = Expr
+Primary             ==        epsilon
+Primary             >         epsilon
+Primary             >=        epsilon
 Primary             [         [ Expr ] Primary'
+Primary             ]         epsilon
+Primary             ||        epsilon
+Primary'            !=        epsilon
+Primary'            &&        epsilon
+Primary'            )         epsilon
+Primary'            *         epsilon
+Primary'            +         epsilon
+Primary'            ,         epsilon
+Primary'            -         epsilon
+Primary'            /         epsilon
+Primary'            ;         epsilon
+Primary'            <         epsilon
+Primary'            <=        epsilon
 Primary'            =         = Expr
+Primary'            ==        epsilon
+Primary'            >         epsilon
+Primary'            >=        epsilon
+Primary'            ]         epsilon
+Primary'            ||        epsilon
 Program             char      VarDeclList
 Program             int       VarDeclList
 S                   char      Program $
@@ -102,6 +144,7 @@ StmtList'           num       StmtList
 StmtList'           return    StmtList
 StmtList'           while     StmtList
 StmtList'           {         StmtList
+StmtList'           }         epsilon
 Type                char      char
 Type                int       int
 UnaryOp             !         !
@@ -113,5 +156,17 @@ VarDecl'            ;         ;
 VarDecl'            [         [ num ] ;
 VarDeclList         char      VarDecl VarDeclList'
 VarDeclList         int       VarDecl VarDeclList'
+VarDeclList'        !         epsilon
+VarDeclList'        $         epsilon
+VarDeclList'        (         epsilon
+VarDeclList'        -         epsilon
+VarDeclList'        ;         epsilon
+VarDeclList'        break     epsilon
 VarDeclList'        char      VarDeclList
+VarDeclList'        id        epsilon
+VarDeclList'        if        epsilon
 VarDeclList'        int       VarDeclList
+VarDeclList'        num       epsilon
+VarDeclList'        return    epsilon
+VarDeclList'        while     epsilon
+VarDeclList'        {         epsilon

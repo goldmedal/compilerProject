@@ -1,5 +1,7 @@
 Nullable
+                     : true
 BinOp                : false
+BinOp'               : false
 Block                : false
 Block'               : false
 Expr                 : false
@@ -27,7 +29,9 @@ VarDeclList          : false
 VarDeclList'         : true
 
 First
-BinOp                : != && * + - / < <= == > >= ||
+                     :
+BinOp                : * + - /
+BinOp'               : != && < <= == > >= ||
 Block                : {
 Block'               : ! ( - ; break char id if int num return while {
 Expr                 : ! ( - id num
@@ -55,7 +59,9 @@ VarDeclList          : char int
 VarDeclList'         : char int
 
 Follow
+                     :
 BinOp                : ! ( - id num
+BinOp'               : ! ( - id num
 Block                : ! $ ( - ; break char else id if int num return while { }
 Block'               : ! $ ( - ; break char else id if int num return while { }
 Expr                 : != && ) * + , - / ; < <= == > >= ] ||
