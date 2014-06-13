@@ -5,7 +5,6 @@
 #include <map>
 #include <set>
 #include <sstream>
-#include <algorithm>
 #include <iomanip>
 
 using namespace std;
