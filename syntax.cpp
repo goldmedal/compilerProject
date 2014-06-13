@@ -14,6 +14,7 @@ ifstream G_ifile;
 multimap<string, string> grammar;
 map<string, bool> nullable;
 map<string, set<string> > first;
+map<string, set<string> > follow;
 
 void initial()
 {
@@ -83,7 +84,8 @@ void read_G()
 			//cout << l_grammar << endl;
 
 			nullable.insert(pair<string, bool>(trimEnd(l_grammar), false));
-			first.insert(pair<string, set<string> >(trimEnd(l_grammar), {}));
+			first.insert(pair<string, set<string> >(trimEnd(l_grammar), {})); // only can read by C++11
+			follow.insert(pair<string, set<string> >(trimEnd(l_grammar), {})); // only can read by C++11
 		}
 		else
 		{
@@ -280,6 +282,54 @@ void find_first()
 			}	
 		}
 	}
+}
+
+set<string> get_follow(string str)
+{	
+	set<string> res;
+	multimap<string, string>::iterator Mbeg, Mend, Miter;
+	map<string, set<string> >::iterator iter;
+
+	for(Miter = grammar.begin(); Miter != grammar.end(); Miter++)
+	{
+		istringstream iss(Miter -> second);
+		string token;
+		bool next = false, is_tail = false;
+		
+		while(getline(iss, token, ' '))
+		{
+			if(next)
+			{
+				if((token.at(0) < 65) || (token.at(0) > 90))
+					res.insert(token);
+				else
+				{
+					iter = first.find(token);
+					res.insert((iter -> second).begin(), (iter -> second).end());
+				}
+				
+				if (nullable.find(token) -> second)
+					next = true;
+				else
+					next = false;
+			}
+
+			if (token == str)
+				next = true;
+		}
+
+		if (next) // at the tail
+		{
+			iter = follow.find(str);
+			res.insert((iter -> second).begin(), (iter -> second).end());
+		}
+	}
+	return res;
+}
+
+void find_follow()
+{
+
 }
 
 int main()
