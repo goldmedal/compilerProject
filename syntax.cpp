@@ -6,6 +6,7 @@
 #include <set>
 #include <sstream>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
@@ -353,6 +354,66 @@ void find_follow()
 	}
 }
 
+void output_set()
+{
+	char filename[] = "set.txt";
+
+	ofstream ofile;
+	ofile.open(filename, ios::out);
+
+	if(!ofile)
+	{
+    	cout << "Fail to open file: " << filename << endl;
+		return;
+	}
+
+	map<string, set<string> >::iterator iter;
+	map<string, bool>::iterator Biter;
+	set<string>::iterator iiter;
+
+// output Nullable
+	ofile << "Nullable" << endl;
+	for (Biter = nullable.begin(); Biter != nullable.end(); Biter++)
+	{
+		ofile << setiosflags(ios::left) << setw(20) << Biter -> first << " : " ;
+
+		if (Biter -> second)
+			ofile << "true";
+		else
+			ofile << "false";
+		
+		ofile << endl;
+	}
+	ofile << endl;
+
+//output First
+	ofile << "First" << endl;
+	for (iter = first.begin(); iter != first.end(); iter++)
+	{
+		ofile << setiosflags(ios::left) << setw(20) << iter -> first << " :" ;
+
+		for (iiter = (iter -> second).begin(); iiter != (iter -> second).end(); iiter++)
+			ofile << " " << *iiter;
+
+		ofile << endl;
+	}
+	ofile << endl;
+
+//output Follow
+	ofile << "Follow" << endl;
+	for (iter = follow.begin(); iter != follow.end(); iter++)
+	{
+		ofile << setiosflags(ios::left) << setw(20) << iter -> first << " :" ;
+
+		for (iiter = (iter -> second).begin(); iiter != (iter -> second).end(); iiter++)
+			ofile << " " << *iiter;
+
+		ofile << endl;
+	}
+
+	ofile.close();
+}
+
 int main()
 {
 	initial();
@@ -365,7 +426,9 @@ int main()
 	find_first();
 	find_follow();
 
-/*	for (multimap<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
+	output_set();
+
+/*	for (map<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
 	{
 		cout << iter->first << endl;
 		cout << " -> " ;
