@@ -395,6 +395,23 @@ void create_LLtable()
 	}
 }
 
+string get_rule(string nonterminal, string terminal)
+{
+	multimap<string, map<string, string> >::iterator beg;
+
+	beg = LLtable.lower_bound(nonterminal);
+
+	while(beg -> first == nonterminal)
+	{
+		return (beg -> second).find(terminal) -> second;
+
+		if (++beg == LLtable.end())
+			break;
+	}
+
+	////// add exception //////////////////
+}
+
 void create_tree()
 {
 	char filename[] = "token.txt";
@@ -414,6 +431,7 @@ void create_tree()
 	
 //for(vector<string>::iterator i = tree.begin(); i != tree.end(); i++) cout << *i << endl;
 	
+	tree.push_back("S");
 	while(ifile.get(temp))
 	{
 		ifile.seekg(-1, ios::cur);
@@ -429,8 +447,7 @@ void create_tree()
 			getline(ifile, token_oneline);
 			token_oneline = trimEnd(token_oneline);
 
-			
-			
+
 		}
 		else
 			getline(ifile, token_oneline);
