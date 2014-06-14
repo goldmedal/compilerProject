@@ -4,6 +4,8 @@
 #include <utility>
 #include <map>
 #include <set>
+#include <vector>
+#include <cstring>
 #include <sstream>
 #include <iomanip>
 
@@ -13,6 +15,7 @@ ifstream G_ifile;
 
 set<string> null_set;
 map<string, string> null_map;
+vector<string> tree;
 
 multimap<string, string> grammar;
 map<string, bool> nullable;
@@ -392,6 +395,50 @@ void create_LLtable()
 	}
 }
 
+void create_tree()
+{
+	char filename[] = "token.txt";
+
+	ifstream ifile;
+	ifile.open(filename, ios::in);
+
+	if(!ifile)
+	{
+    	cout << "Fail to open file: " << filename << endl;
+		return;
+	}
+
+	vector<string> stack, stack_temp;
+	char temp = '0';
+	string token_oneline;
+	
+//for(vector<string>::iterator i = tree.begin(); i != tree.end(); i++) cout << *i << endl;
+	
+	while(ifile.get(temp))
+	{
+		ifile.seekg(-1, ios::cur);
+
+		if(temp == ' ')
+		{
+			while(ifile.get(temp))
+			{
+				if(temp == ':')
+					break;
+			}
+
+			getline(ifile, token_oneline);
+			token_oneline = trimEnd(token_oneline);
+
+			
+			
+		}
+		else
+			getline(ifile, token_oneline);
+	}
+
+	ifile.close();
+}
+
 void output_set()
 {
 	char filename[] = "set.txt";
@@ -469,6 +516,7 @@ void output_LLtable()
 	map<string, string>::iterator iiter;
 
 	ofile << "S" << endl;
+
 	for (iter = LLtable.begin(); iter != LLtable.end(); iter++)
 	{
 		for (iiter = (iter -> second).begin(); iiter != (iter -> second).end(); iiter++)
@@ -501,6 +549,8 @@ int main()
 
 	create_LLtable();
 	output_LLtable();
+
+	create_tree();
 
 /*	for (map<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
 	{
