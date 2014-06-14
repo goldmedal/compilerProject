@@ -427,7 +427,7 @@ void create_tree()
 
 	vector<string> stack, stack_temp;
 	char temp = '0';
-	string token_oneline;
+	string token_oneline, rule;
 	
 //for(vector<string>::iterator i = tree.begin(); i != tree.end(); i++) cout << *i << endl;
 	
@@ -447,7 +447,9 @@ void create_tree()
 			getline(ifile, token_oneline);
 			token_oneline = trimEnd(token_oneline);
 
-
+			rule = get_rule(*(stack.end()), token_oneline);
+			cout << rule <<endl;
+			exit(0);
 		}
 		else
 			getline(ifile, token_oneline);
