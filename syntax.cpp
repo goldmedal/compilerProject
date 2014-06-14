@@ -5,10 +5,10 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <cstring>
 #include <sstream>
+//#include <string>
 #include <iomanip>
-
+#include <cstdlib>
 using namespace std;
 
 ifstream G_ifile;
@@ -32,7 +32,11 @@ void initial()
 string trimEnd(string str)
 {
 	string delim = " " ;
-	string r = str.erase(str.find_last_not_of(delim) + 0);
+
+	if (str.at(str.length() - 1) != delim.at(0))
+		return str.erase(0, str.find_first_not_of(delim));
+
+	string r = str.erase(str.find_last_not_of(delim) + 1, str.length() - 1);
 	return r.erase(0, r.find_first_not_of(delim));
 }
 
@@ -88,7 +92,9 @@ void read_G()
 		{
 			//G_ifile >> temp;
 			getline(G_ifile, l_grammar);
-			//cout << l_grammar << endl;
+			//cout << trimEnd(l_grammar) << endl;
+
+			l_grammar = l_grammar.erase(l_grammar.length() - 1);
 
 			nullable.insert(pair<string, bool>(trimEnd(l_grammar), false));
 			first.insert(pair<string, set<string> >(trimEnd(l_grammar), null_set)); 
@@ -98,9 +104,11 @@ void read_G()
 		else
 		{
 			getline(G_ifile, r_grammar);
+			r_grammar = r_grammar.erase(r_grammar.length() - 1);
+
 			grammar.insert(pair<string, string>(trimEnd(l_grammar), trimEnd(r_grammar)));
-			//cout << trimEnd(l_grammar) << endl;
-			//cout << " || " ;
+			//cout << trimEnd(l_grammar) << "123" << endl;
+
 			//cout << trimEnd(l_grammar).length() <<endl;
 		}
 		//G_ifile.seekg(1, ios::cur);
@@ -136,12 +144,13 @@ void find_nullable()
 
 	for (iter = nullable.begin(); iter != nullable.end(); iter++)  
 	{
-			//cout << iter->first << " " << iter->second << endl;
+			//cout << iter->first << endl; 
+			//cout << "  " << iter->second << endl;
 		str = iter -> first;
 		Mbeg = grammar.lower_bound(str);
 
 		while(Mbeg -> first == str)
-		{//cout << str << endl;
+		{//cout << (Mbeg -> second).length() << endl;
 			if(Mbeg -> second == "epsilon")
 			{
 				find = nullable.find(str);
@@ -431,7 +440,7 @@ void create_tree()
 	
 //for(vector<string>::iterator i = tree.begin(); i != tree.end(); i++) cout << *i << endl;
 	
-	tree.push_back("S");
+	stack.push_back("S");
 	while(ifile.get(temp))
 	{
 		ifile.seekg(-1, ios::cur);
@@ -443,12 +452,13 @@ void create_tree()
 				if(temp == ':')
 					break;
 			}
+			ifile.get();
 
 			getline(ifile, token_oneline);
 			token_oneline = trimEnd(token_oneline);
 
-			rule = get_rule(*(stack.end()), token_oneline);
-			cout << rule <<endl;
+			//rule = get_rule(*(--stack.end()), token_oneline);
+			cout << token_oneline.length() <<endl;
 			exit(0);
 		}
 		else
@@ -560,7 +570,7 @@ int main()
 	//cout << G_ifile;
 	read_G();
 
-	find_nullable() ;
+	find_nullable() ; 
 	find_first();
 	find_follow();
 
@@ -569,14 +579,15 @@ int main()
 	create_LLtable();
 	output_LLtable();
 
-	create_tree();
+	//create_tree();
 
-/*	for (map<string, set<string> >::iterator iter = follow.begin(); iter != follow.end(); iter++)
+/*	for (map<string, bool >::iterator iter = nullable.begin(); iter != nullable.end(); iter++)
 	{
 		cout << iter->first << endl;
 		cout << " -> " ;
-		for (set<string>::iterator iiter = (iter->second).begin(); iiter != (iter->second).end(); iiter++)
-			cout << *iiter << " ";
+		//for (set<string>::iterator iiter = (iter->second).begin(); iiter != (iter->second).end(); iiter++)
+		//	cout << *iiter << " ";
+		cout << iter->second << endl;
 		cout <<endl;
 	}*/
 
