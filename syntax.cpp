@@ -21,7 +21,7 @@ multimap<string, string> grammar;
 map<string, bool> nullable;
 map<string, set<string> > first;
 map<string, set<string> > follow;
-multimap<string, map<string, string> > LLtable;
+map<string, map<string, string> > LLtable;
 
 void initial()
 {
@@ -406,18 +406,23 @@ void create_LLtable()
 
 string get_rule(string nonterminal, string terminal)
 {
-	multimap<string, map<string, string> >::iterator beg;
+	map<string, map<string, string> >::iterator beg;
 
-	beg = LLtable.lower_bound(nonterminal);
+	bool is_in_table = false;
 
-	while(beg -> first == nonterminal)
-	{
+	beg = LLtable.find(nonterminal);
+
+	if ((beg -> second).find(terminal) != (beg -> second).end())
 		return (beg -> second).find(terminal) -> second;
+	else
+	{//cout << terminal << endl;
+		if((terminal.at(0) >= 48) && (terminal.at(0) <= 57))
+			terminal = "num";
+		else if(((terminal.at(0) >= 65) && (terminal.at(0) <= 90)) || (terminal.at(0) == 95) || ((terminal.at(0) >= 97) && (terminal.at(0) <= 122)))
+			terminal = "id";
 
-		if (++beg == LLtable.end())
-			break;
+		return (beg -> second).find(terminal) -> second;
 	}
-
 	////// add exception //////////////////
 }
 
@@ -436,7 +441,7 @@ void create_tree()
 
 	vector<string> stack, stack_temp;
 	char temp = '0';
-	string token_oneline, rule;
+	string token_oneline, rule, token;
 	
 //for(vector<string>::iterator i = tree.begin(); i != tree.end(); i++) cout << *i << endl;
 	
@@ -455,11 +460,40 @@ void create_tree()
 			ifile.get();
 
 			getline(ifile, token_oneline);
+			//token_oneline = token_oneline.erase(token_oneline.length() - 1);
 			token_oneline = trimEnd(token_oneline);
 
-			//rule = get_rule(*(--stack.end()), token_oneline);
-			cout << token_oneline.length() <<endl;
-			exit(0);
+			while(true)
+			{
+				if(((stack.back()).at(0) < 65) || ((stack.back()).at(0) > 90))
+				{
+					token = stack.back();
+					stack.pop_back();
+					cout <<	token << " " << token_oneline <<endl;
+
+					break;
+				}
+				else
+				{
+					token = stack.back(); 
+					stack.pop_back();
+	//cout << token << " " << token_oneline << endl;
+					rule = get_rule(token, token_oneline);
+	//cout << token << " " << token_oneline << endl;
+					istringstream iss(rule);
+
+					stack_temp.clear();
+					while(getline(iss, token, ' '))
+						stack_temp.push_back(token);
+		 
+					while(!stack_temp.empty())
+					{
+						token = stack_temp.back();
+						stack_temp.pop_back();
+						stack.push_back(token);
+					}
+				}
+			}
 		}
 		else
 			getline(ifile, token_oneline);
@@ -579,7 +613,7 @@ int main()
 	create_LLtable();
 	output_LLtable();
 
-	//create_tree();
+	create_tree();
 
 /*	for (map<string, bool >::iterator iter = nullable.begin(); iter != nullable.end(); iter++)
 	{
