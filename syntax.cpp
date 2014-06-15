@@ -23,6 +23,12 @@ map<string, set<string> > first;
 map<string, set<string> > follow;
 map<string, map<string, string> > LLtable;
 
+struct node
+{
+	string value;
+	int degree;
+};
+
 void initial()
 {
 	null_set.clear();
@@ -426,6 +432,11 @@ string get_rule(string nonterminal, string terminal)
 	////// add exception //////////////////
 }
 
+void insert_tree(string node, int degree)
+{
+
+}
+
 void create_tree()
 {
 	char filename[] = "token.txt";
@@ -439,11 +450,17 @@ void create_tree()
 		return;
 	}
 
-	vector<string> stack, stack_temp;
+	vector<node> stack, stack_temp;
+
 	char temp = '0';
 	string token_oneline, rule, token;
-	
-	stack.push_back("S");
+
+	int cur_degree = 1;
+	node start_node, node_temp;
+	start_node.value = "S";
+	start_node.degree = cur_degree;
+
+	stack.push_back(start_node);
 	while(ifile.get(temp))
 	{
 		ifile.seekg(-1, ios::cur);
@@ -462,34 +479,41 @@ void create_tree()
 
 			while(true)
 			{
-				if(((stack.back()).at(0) < 65) || ((stack.back()).at(0) > 90))
+				if(((stack.back()).value.at(0) < 65) || ((stack.back()).value.at(0) > 90))
 				{
-					token = stack.back();
+					token = stack.back().value;
 					stack.pop_back();
-					cout <<	token << " " << token_oneline <<endl;
+cout <<	token << " " << token_oneline <<endl;
 
 					break;
 				}
 				else
 				{
-					token = stack.back(); 
+					token = stack.back().value; 
 					stack.pop_back();
-	cout << token << " " << token_oneline << endl;
+cout << token << " " << token_oneline << endl;
 					rule = get_rule(token, token_oneline);
-	//cout << token << " " << token_oneline << endl;
+//cout << token << " " << token_oneline << endl;
 					istringstream iss(rule);
 					if (rule == "epsilon")
 						continue;
 
 					stack_temp.clear();
 					while(getline(iss, token, ' '))
-						stack_temp.push_back(token);
+					{
+						node_temp.value = token;
+						node_temp.degree = 123123;
+						stack_temp.push_back(node_temp);
+					}
 		 
 					while(!stack_temp.empty())
 					{
-						token = stack_temp.back();
+						token = stack_temp.back().value;
 						stack_temp.pop_back();
-						stack.push_back(token);
+
+						node_temp.value = token;
+						node_temp.degree = 123123;
+						stack.push_back(node_temp);
 					}
 				}
 			}
@@ -502,17 +526,17 @@ void create_tree()
 	token_oneline = "$";
 	while(true)
 	{
-		if(((stack.back()).at(0) < 65) || ((stack.back()).at(0) > 90))
+		if(((stack.back()).value.at(0) < 65) || ((stack.back()).value.at(0) > 90))
 		{
-			token = stack.back();
+			token = stack.back().value;
 			stack.pop_back();
-			cout <<	token << " " << token_oneline <<endl;
+cout <<	token << " " << token_oneline <<endl;
 
 			break;
 		}
 		else
 		{
-			token = stack.back(); 
+			token = stack.back().value; 
 			stack.pop_back();
 cout << token << " " << token_oneline << endl;
 			rule = get_rule(token, token_oneline);
@@ -523,13 +547,20 @@ cout << token << " " << token_oneline << endl;
 
 			stack_temp.clear();
 			while(getline(iss, token, ' '))
-				stack_temp.push_back(token);
+			{
+				node_temp.value = token;
+				node_temp.degree = 123123;
+				stack_temp.push_back(node_temp);
+			}
 		 
 			while(!stack_temp.empty())
 			{
-				token = stack_temp.back();
+				token = stack_temp.back().value;
 				stack_temp.pop_back();
-				stack.push_back(token);
+
+				node_temp.value = token;
+				node_temp.degree = 123123;
+				stack.push_back(node_temp);
 			}
 		}
 	}
