@@ -13,21 +13,21 @@ using namespace std;
 
 ifstream G_ifile;
 
+struct node
+{
+	string value;
+	int degree;
+};
+
 set<string> null_set;
 map<string, string> null_map;
-vector<string> tree;
+vector<node> tree;
 
 multimap<string, string> grammar;
 map<string, bool> nullable;
 map<string, set<string> > first;
 map<string, set<string> > follow;
 map<string, map<string, string> > LLtable;
-
-struct node
-{
-	string value;
-	int degree;
-};
 
 void initial()
 {
@@ -432,11 +432,6 @@ string get_rule(string nonterminal, string terminal)
 	////// add exception //////////////////
 }
 
-void insert_tree(string node, int degree)
-{
-
-}
-
 void create_tree()
 {
 	char filename[] = "token.txt";
@@ -455,7 +450,7 @@ void create_tree()
 	char temp = '0';
 	string token_oneline, rule, token;
 
-	int cur_degree = 1;
+	int cur_degree = 0;
 	node start_node, node_temp;
 	start_node.value = "S";
 	start_node.degree = cur_degree;
@@ -477,45 +472,64 @@ void create_tree()
 			getline(ifile, token_oneline);
 			token_oneline = trimEnd(token_oneline);
 
+			cur_degree = stack.back().degree + 1;
+
 			while(true)
 			{
 				if(((stack.back()).value.at(0) < 65) || ((stack.back()).value.at(0) > 90))
 				{
 					token = stack.back().value;
+					tree.push_back(stack.back());
+//cout << stack.back().degree << token << " " << token_oneline << endl;
+					if (token == "id")
+					{
+						node_temp.value = token_oneline;
+						node_temp.degree = cur_degree;
+						tree.push_back(node_temp);
+					}
+					
 					stack.pop_back();
-cout <<	token << " " << token_oneline <<endl;
-
 					break;
 				}
 				else
 				{
 					token = stack.back().value; 
+					tree.push_back(stack.back());
+//cout << stack.back().degree << token << " " << token_oneline << endl;
+
 					stack.pop_back();
-cout << token << " " << token_oneline << endl;
 					rule = get_rule(token, token_oneline);
 //cout << token << " " << token_oneline << endl;
 					istringstream iss(rule);
 					if (rule == "epsilon")
+					{
+						node_temp.value = "epsilon";
+						node_temp.degree = cur_degree;
+						tree.push_back(node_temp);
+
+						cur_degree = stack.back().degree + 1;
+
 						continue;
+					}
 
 					stack_temp.clear();
 					while(getline(iss, token, ' '))
 					{
 						node_temp.value = token;
-						node_temp.degree = 123123;
+						node_temp.degree = cur_degree;
 						stack_temp.push_back(node_temp);
 					}
 		 
 					while(!stack_temp.empty())
 					{
-						token = stack_temp.back().value;
+						node_temp = stack_temp.back();
 						stack_temp.pop_back();
 
-						node_temp.value = token;
-						node_temp.degree = 123123;
 						stack.push_back(node_temp);
 					}
 				}
+
+				cur_degree++;
 			}
 		}
 		else
@@ -523,46 +537,58 @@ cout << token << " " << token_oneline << endl;
 	}
 
 //////////////// match $ stmbal ///////////////////
+	cur_degree = stack.back().degree + 1;
 	token_oneline = "$";
 	while(true)
 	{
 		if(((stack.back()).value.at(0) < 65) || ((stack.back()).value.at(0) > 90))
 		{
 			token = stack.back().value;
-			stack.pop_back();
-cout <<	token << " " << token_oneline <<endl;
+			tree.push_back(stack.back());
+//cout <<	stack.back().degree << token << " " << token_oneline <<endl;
 
+			stack.pop_back();
 			break;
 		}
 		else
 		{
 			token = stack.back().value; 
+			tree.push_back(stack.back());
+//cout << stack.back().degree << token << " " << token_oneline << endl;
+
 			stack.pop_back();
-cout << token << " " << token_oneline << endl;
 			rule = get_rule(token, token_oneline);
 //cout << token << " " << token_oneline << endl;
 			istringstream iss(rule);
 			if (rule == "epsilon")
+			{
+				node_temp.value = "epsilon";
+				node_temp.degree = cur_degree;
+				tree.push_back(node_temp);
+
+				cur_degree = stack.back().degree + 1;
+
 				continue;
+			}
 
 			stack_temp.clear();
 			while(getline(iss, token, ' '))
 			{
 				node_temp.value = token;
-				node_temp.degree = 123123;
+				node_temp.degree = cur_degree;
 				stack_temp.push_back(node_temp);
 			}
 		 
 			while(!stack_temp.empty())
 			{
-				token = stack_temp.back().value;
+				node_temp = stack_temp.back();
 				stack_temp.pop_back();
-
-				node_temp.value = token;
-				node_temp.degree = 123123;
+						
 				stack.push_back(node_temp);
 			}
 		}
+
+		cur_degree++;
 	}
 
 	ifile.close();
@@ -661,6 +687,29 @@ void output_LLtable()
 	ofile.close();
 }
 
+void output_tree()
+{
+	char filename[] = "tree.txt";
+
+	ofstream ofile;
+	ofile.open(filename, ios::out);
+
+	if(!ofile)
+	{
+    	ofile << "Fail to open file: " << filename << endl;
+		return;
+	}
+
+	for (vector<node>::iterator iter = tree.begin(); iter != tree.end(); iter++)
+	{
+		for (int i = 0; i < (*iter).degree; i++)
+			ofile << "  " ;
+		
+		ofile << (*iter).degree << " " <<(*iter).value << endl;
+	}
+
+	ofile.close();
+}
 
 int main()
 {
@@ -680,6 +729,7 @@ int main()
 	output_LLtable();
 
 	create_tree();
+	output_tree();
 
 /*	for (map<string, bool >::iterator iter = nullable.begin(); iter != nullable.end(); iter++)
 	{
