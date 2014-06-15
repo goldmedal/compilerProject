@@ -443,8 +443,6 @@ void create_tree()
 	char temp = '0';
 	string token_oneline, rule, token;
 	
-//for(vector<string>::iterator i = tree.begin(); i != tree.end(); i++) cout << *i << endl;
-	
 	stack.push_back("S");
 	while(ifile.get(temp))
 	{
@@ -460,7 +458,6 @@ void create_tree()
 			ifile.get();
 
 			getline(ifile, token_oneline);
-			//token_oneline = token_oneline.erase(token_oneline.length() - 1);
 			token_oneline = trimEnd(token_oneline);
 
 			while(true)
@@ -477,10 +474,12 @@ void create_tree()
 				{
 					token = stack.back(); 
 					stack.pop_back();
-	//cout << token << " " << token_oneline << endl;
+	cout << token << " " << token_oneline << endl;
 					rule = get_rule(token, token_oneline);
 	//cout << token << " " << token_oneline << endl;
 					istringstream iss(rule);
+					if (rule == "epsilon")
+						continue;
 
 					stack_temp.clear();
 					while(getline(iss, token, ' '))
@@ -497,6 +496,42 @@ void create_tree()
 		}
 		else
 			getline(ifile, token_oneline);
+	}
+
+//////////////// match $ stmbal ///////////////////
+	token_oneline = "$";
+	while(true)
+	{
+		if(((stack.back()).at(0) < 65) || ((stack.back()).at(0) > 90))
+		{
+			token = stack.back();
+			stack.pop_back();
+			cout <<	token << " " << token_oneline <<endl;
+
+			break;
+		}
+		else
+		{
+			token = stack.back(); 
+			stack.pop_back();
+cout << token << " " << token_oneline << endl;
+			rule = get_rule(token, token_oneline);
+//cout << token << " " << token_oneline << endl;
+			istringstream iss(rule);
+			if (rule == "epsilon")
+				continue;
+
+			stack_temp.clear();
+			while(getline(iss, token, ' '))
+				stack_temp.push_back(token);
+		 
+			while(!stack_temp.empty())
+			{
+				token = stack_temp.back();
+				stack_temp.pop_back();
+				stack.push_back(token);
+			}
+		}
 	}
 
 	ifile.close();
