@@ -29,8 +29,8 @@ Line  6:
 Line  7:
          <Identifier> : x
          <Operators>  : =
-         <Identifier> : a
-         <Operators>  : +
+         <Identifier> : x
+         <Operators>  : *
          <Identifier> : b
          <Special>    : ;
 Line  8:

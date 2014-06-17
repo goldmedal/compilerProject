@@ -51,6 +51,7 @@
                           13 =
                           13 Expr
                             14 num
+                              15 0
                             14 Expr'
                               15 epsilon
                         12 Expr'
@@ -66,6 +67,7 @@
                               15 =
                               15 Expr
                                 16 num
+                                  17 1
                                 16 Expr'
                                   17 epsilon
                             14 Expr'
@@ -81,27 +83,26 @@
                                   17 =
                                   17 Expr
                                     18 id
-                                      19 a
+                                      19 x
                                     18 Primary
                                       19 epsilon
                                     18 Expr'
-                                      19 epsilon
+                                      19 BinOp
+                                        20 *
+                                      19 Expr
+                                        20 id
+                                          21 b
+                                        20 Primary
+                                          21 epsilon
+                                        20 Expr'
+                                          21 epsilon
+                                      19 Expr'
+                                        20 epsilon
                                 16 Expr'
                                   17 epsilon
                               15 ;
                             14 StmtList'
-                              15 StmtList
-                                16 Stmt
-                                  17 Expr
-                                    18 id
-                                      19 b
-                                    18 Primary
-                                      19 epsilon
-                                    18 Expr'
-                                      19 epsilon
-                                  17 ;
-                                16 StmtList'
-                                  17 epsilon
+                              15 epsilon
                   9 }
           5 VarDeclList'
             6 VarDeclList
@@ -155,11 +156,8 @@
                                 16 Primary
                                   17 epsilon
                                 16 Expr'
-                                  17 epsilon
-                              15 ;
-                            14 StmtList'
-                              15 StmtList
-                                16 Stmt
+                                  17 BinOp
+                                    18 *
                                   17 Expr
                                     18 id
                                       19 d
@@ -167,9 +165,11 @@
                                       19 epsilon
                                     18 Expr'
                                       19 epsilon
-                                  17 ;
-                                16 StmtList'
-                                  17 epsilon
+                                  17 Expr'
+                                    18 epsilon
+                              15 ;
+                            14 StmtList'
+                              15 epsilon
                           13 }
                   9 VarDeclList'
                     10 epsilon
