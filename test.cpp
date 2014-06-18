@@ -1,0 +1,235 @@
+#include <ctype.h>
+
+string op(string str)
+{
+      if(str == "+")return "ADD";
+      if(str == "-")return "SUB";
+      if(str == "*")return "MUL";
+      if(str == "/")return "DIV";
+      if(str == ">")return "GT";
+      if(str == ">=")return "GE";
+      if(str == "<")return "LT";
+      if(str == "<=")return "LE";
+      if(str == "&&")return "AND";
+      if(str == "||")return "OR";
+      if(str == "!=")return "NE";
+      if(str == "==")return "EQ";
+
+      cout << "Wrong op!" << endl;
+}
+
+void machine_code()
+{
+      ofstream outfile;
+      outfile.open ("code.tm");
+      
+      int line = 0;
+      int reg_num = 1;
+      int reg1, mem, while_jump = 0;
+      outfile << line++ << ": LDC 0,0(0)" << endl;  //reg(0)=0;
+      
+      vector<struct Quad_row>::iterator Qiter ; 
+      for(Qiter = quadruple.begin(); Qiter != quadruple.end(); Qiter++)
+      {
+            if(Qiter -> op == "=")
+            {
+                  if(Qiter -> arg1[0]=='t' && Qiter -> result[0]!='t')
+                  {
+                        outfile << line++ << ": ST " << reg1 << "," << mem_add(Qiter->result) << "(0)"<< endl;
+                  }
+                  else if(Qiter->arg1[0]=='t' && Qiter->result[0]=='t')
+                  {
+                        if(reg1==1)reg1=6;
+                        outfile << line++ << ": ST " << reg1-1 << "," << mem << "(0)"<< endl;
+                  }
+                  else if(Qiter->arg1[0]!='t' && isdigit(Qiter->arg1[0]))  //存到暫存器
+                  {
+                        reg1=reg_num;
+                        outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg1 << "(0)"<< endl;
+                  }
+                  else if(Qiter->arg1[0]!='t' && !(isdigit(Qiter->arg1[0])))  
+                  {
+                        reg1=reg_num;
+                        outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg1) << "(0)"<< endl;
+                  }
+            }
+            else if(Qiter->op=="+" || Qiter->op=="-" || Qiter->op=="*" || Qiter->op=="/")
+            {
+                  if(reg_num+3>6)reg_num=1;
+                  
+                  if(Qiter->arg1[0]!='t' && Qiter->arg2[0]!='t')
+                  {
+                        //cout <<"reg= " << reg_num <<endl;
+                        if(   !(isdigit(Qiter->arg1[0])) && !(isdigit(Qiter->arg2[0])) )
+                        {
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg1) << "(0)"<< endl;
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg2) << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                              
+                        }
+                        else if((isdigit(Qiter->arg1[0])) && !(isdigit(Qiter->arg2[0])))
+                        {
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg1 << "(0)"<< endl;
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg2) << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                        }
+                        else if(!(isdigit(Qiter->arg1[0])) && (isdigit(Qiter->arg2[0])))
+                        {
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg1) << "(0)"<< endl;
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg2 << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                        }
+                        else
+                        {
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg1 << "(0)"<< endl;
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg2 << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                        }
+                        
+                  }
+                  else
+                  {
+                        //cout<< "haha";
+                        outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg1 << "," << reg1-1 << endl;
+                        reg1=reg_num;
+                        reg_num++;
+                  }
+                  
+            }
+            else if(Qiter->op=="[]")  
+            {
+                  mem=mem_add(Qiter->arg1+Qiter->op[0]+Qiter->arg2+Qiter->op[1]);
+                  reg1=reg_num;
+                  outfile << line++ << ": LD " << reg_num++ << "," << mem << "(0)"<< endl;
+            }
+            
+            else if(Qiter->op==">" || Qiter->op==">=" || Qiter->op=="<" || Qiter->op=="<=" || Qiter->op=="&&" || Qiter->op=="||" || Qiter->op=="!=" || Qiter->op=="==")
+            {
+                  if(reg_num+3>6)reg_num=1;
+                  if(Qiter->arg1[0]!='t' && Qiter->arg2[0]!='t')
+                  {
+                        //cout <<"reg= " << reg_num <<endl;
+                        while_jump = line;
+                        if(   !(isdigit(Qiter->arg1[0])) && !(isdigit(Qiter->arg2[0])) )
+                        {
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg1) << "(0)"<< endl;
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg2) << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                              
+                        }
+                        else if((isdigit(Qiter->arg1[0])) && !(isdigit(Qiter->arg2[0])))
+                        {
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg1 << "(0)"<< endl;
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg2) << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                        }
+                        else if(!(isdigit(Qiter->arg1[0])) && (isdigit(Qiter->arg2[0])))
+                        {
+                              outfile << line++ << ": LD " << reg_num++ << "," << mem_add(Qiter->arg1) << "(0)"<< endl;
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg2 << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                        }
+                        else
+                        {
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg1 << "(0)"<< endl;
+                              outfile << line++ << ": LDC " << reg_num++ << "," << Qiter->arg2 << "(0)"<< endl;
+                              outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg_num-2 << "," << reg_num-1 << endl;
+                              reg1=reg_num;
+                        }
+                        
+                  }
+                  else
+                  {
+                        //cout<< "haha";
+                        outfile << line++ << ": " << opcode(Qiter->op)<< " " << reg_num << "," << reg1 << "," << reg1-1 << endl;
+                        reg_num++;
+                  }
+                  
+            }
+            else if(Qiter->op=="jfalse")
+            {
+                  vector<struct Quad_row>::iterator qiter ; 
+                  int things=0;
+                  
+                  for(qiter= Qiter; qiter != quadruple.end(); qiter++)
+                  {
+                        if(qiter->op=="=" || qiter->op=="[]")things=things+1;
+                        else if(qiter->op=="+" || qiter->op=="-" || qiter->op=="*" || qiter->op=="/")
+                        {
+                              if(qiter->arg1[0]!='t' && qiter->arg2[0]!='t')things=things+3;
+                              else things=things+1;
+                        }
+                        
+                        if(qiter->op=="jmp")break;
+                  }
+                  //cout << "things=" << things << endl;
+                  
+                  
+                  outfile << line++ << ": JEQ " << reg1 << "," << (line+things+2) << "(0)"<< endl;
+            }
+            else if(Qiter->op=="jmp")
+            {
+                  int myarg1 =atoi((Qiter->arg1).c_str());
+                  if((Qiter->index) > myarg1)  //while
+                        outfile << line++ << ": JEQ 0,"<< while_jump << "(0)"<< endl;
+                        
+                  else //if-else
+                  {
+                        int quadnum=myarg1-(Qiter->index);
+                        vector<struct Quad_row>::iterator qiter ; 
+                        int things=0;
+                  
+                        for(qiter= Qiter; quadnum != 0; qiter++,quadnum--)
+                        {
+                              if(qiter->op=="=" || qiter->op=="[]")things=things+1;
+                              else if(qiter->op=="+" || qiter->op=="-" || qiter->op=="*" || qiter->op=="/")
+                              {
+                                    if(qiter->arg1[0]!='t' && qiter->arg2[0]!='t')things=things+3;
+                                    else things=things+1;
+                              }
+                        }
+                        //cout << "things=" << things << endl;
+                        outfile << line++ << ": JEQ 0," << (line+things+2) << "(0)"<< endl;
+                  }     
+            }
+            else if(Qiter->op=="return")
+            {
+                  if(Qiter->result[0]!='t')
+                  {
+                        if(isdigit(Qiter->result[0]))outfile << line++ << ": LDC 1," << Qiter->result << "(0)"<< endl;
+                        else if(!(isdigit(Qiter->result[0])))outfile << line++ << ": LD 1," << mem_add(Qiter->result) << "(0)"<< endl;
+                  }
+                  else
+                  {
+                        outfile << line++ << ": LDA 1,0(" << reg1 << ")"<< endl;
+                  }
+            }
+            
+            if(reg_num==6)reg_num=1;
+      }
+      
+      outfile << line++ << ": OUT 1,0,0" << endl;
+      outfile << line++ << ": HALT 1,0,0" << endl;
+      
+      for(int i=0;i<var.size();i++)
+        cout << var[i] << " " << i << endl;
+}
+
+int mem_add(string tok)
+{
+    for(int i=0 ;i<var.size() ;i++)
+        if(var[i]==tok)
+            return i;
+                  
+    var.push_back(tok);
+      
+    return var.size()-1;
+}
+
