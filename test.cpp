@@ -111,12 +111,12 @@ void machine_code(vector<struct Quad_row> quadruple)
                   }
                   
             }
-            else if(qiter->op=="[]")  
+            /*else if(qiter->op=="[]")  
             {
                   mem=mem_add(qiter->arg1+qiter->op[0]+qiter->arg2+qiter->op[1]);
                   reg1=reg_num;
                   outfile << line++ << ": LD " << reg_num++ << "," << mem << "(0)"<< endl;
-            }
+            }*/
             
             else if(qiter->op==">" || qiter->op==">=" || qiter->op=="<" || qiter->op=="<=" || qiter->op=="&&" || qiter->op=="||" || qiter->op=="!=" || qiter->op=="==")
             {
@@ -205,7 +205,7 @@ void machine_code(vector<struct Quad_row> quadruple)
                         outfile << line++ << ": JEQ 0," << (line+things+2) << "(0)"<< endl;
                   }     
             }
-            else if(qiter->op=="return")
+            /*else if(qiter->op=="return")
             {
                   if(qiter->result[0]!='t')
                   {
@@ -216,7 +216,7 @@ void machine_code(vector<struct Quad_row> quadruple)
                   {
                         outfile << line++ << ": LDA 1,0(" << reg1 << ")"<< endl;
                   }
-            }
+            }*/
             
             if(reg_num==6)reg_num=1;
       }
